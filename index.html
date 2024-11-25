@@ -26,6 +26,9 @@
 <body>
   
     <main>
+        <!-- Loading Spinner -->
+        <div class="spinner-border m-5" role="status" style="display: none;"></div>
+        
     <!--Display home page. First thing when open the page  -->
     <article id="home">
         <div id="left-container">
@@ -35,7 +38,8 @@
             </div>
             <!-- Display all seasons include 2020 - 2023 -->
             <div id="seasons">
-                <select>
+                <label for="season-select"  style="padding: 10px;"><strong>Season</strong></label>
+    <select id="season-select">
                     <option></option>
                 </select>
             </div>
@@ -50,11 +54,13 @@
     <article id="browse">
         <!-- Display all races of the selected season sorted by rounds  -->
         <section id="races">
-            <ul>
-                <li>
-
-                </li>
-            </ul>
+            <h3 id="raceHeading"></h3>
+            <table>
+                <tr>
+                    <th>Round</th>
+                    <th>Circuit Name</th>
+                </tr>
+            </table>
         </section>
 
         <!-- Display race results when user clicks race result -->

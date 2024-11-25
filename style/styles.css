@@ -49,3 +49,16 @@ height: 85vh;
     color: #666; /* Gray text color */
     margin-left: auto; /* Push the image to the right */
 }
+
+
+/* Style for browse */
+
+#browse {
+    display: flex;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background color */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+height: 85vh;
+}

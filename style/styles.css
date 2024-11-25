@@ -1,0 +1,51 @@
+/* style/styles.css */
+
+/* Style for the home article */
+
+#home {
+    display: flex;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background color */
+    border: 1px solid #ccc; /* Light border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+height: 85vh;
+}
+
+/* Container for the left side (description and seasons) */
+#left-container {
+    width: 30%; /* 30% width for the left side */
+    padding-right: 20px; /* Space between left and right */
+}
+
+/* Style for the description */
+#descrition {
+    margin-bottom: 20px; /* Space below the description */
+    font-size: 1.2em; /* Larger font size */
+    
+}
+
+/* Style for the seasons dropdown */
+#seasons {
+    margin-bottom: 20px; /* Space below the dropdown */
+}
+
+/* Style for the select element */
+#seasons select {
+    padding: 10px; /* Padding inside the select */
+    font-size: 1em; /* Font size for the select */
+    border: 1px solid #ccc; /* Border for the select */
+    border-radius: 4px; /* Rounded corners */
+    background-color: #fff; /* White background */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+/* Style for the image container */
+#image {
+    background-color: #eaeaea; /* Light gray background */
+    display: flex;
+    border-radius: 4px; /* Rounded corners */
+    font-style: italic; /* Italic text for placeholder */
+    color: #666; /* Gray text color */
+    margin-left: auto; /* Push the image to the right */
+}

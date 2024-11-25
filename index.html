@@ -4,28 +4,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="js/f1.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style/styles.css"></style>
     <title>COMP 3512 Assignment 2</title>
 </head>
-
+<header>
+  <!-- Nav bar -->
+  <nav class="navbar navbar-light bg-light d-flex justify-content-between">
+    <a class="navbar-brand" href="index.html">
+        <img src="images/logo.jpg" alt="Logo" id="logo" width="100" height="80" class="d-inline-block align-top">
+        
+    </a>
+    <div class="mx-auto text-center" style="flex-grow: 1;">
+        <span style="font-size: 1.5rem; font-weight: bold;">
+            F1 Dashboard Project
+        </span>
+    </div>
+</nav>
+</header>
 <body>
+  
     <main>
     <!--Display home page. First thing when open the page  -->
-    <article id=home>
-        <!-- Show a brief description about the project -->
-        <div id="descrition">
-
-        </div>
-        <!-- Display all seasons include 2020 - 2023 -->
-        <div id="seasons">
-            <select>
-                <option>
-
-                </option>
-            </select>
+    <article id="home">
+        <div id="left-container">
+            <!-- Show a brief description about the project -->
+            <div id="descrition">
+                <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Nesciunt eaque incidunt molestiae sed fugiat, dolore temporibus? Suscipit asperiores sit ad obcaecati, minima architecto soluta quaerat dolores explicabo alias qui ratione!</p>
+            </div>
+            <!-- Display all seasons include 2020 - 2023 -->
+            <div id="seasons">
+                <select>
+                    <option></option>
+                </select>
+            </div>
         </div>
         <!-- Display some type of decoration image -->
         <div id="image">
-
+            <img src="images/Charles_Leclerc_2022.jpg">
         </div>
     </article>
 
@@ -78,18 +95,18 @@
 </main>
 
 <!-- display driver popup when user click on driver link -->
-<aside id="driver">
+<dialog id="driver">
 
-</aside>
+</dialog>
 <!-- display circuit popup when user click on circuit link -->
-<aside id="circuit">
+<dialog id="circuit">
 
-</aside>
+</dialog>
 <!-- display constructor popup when user click on constructor link -->
 
-<aside id="constructor">
+<dialog id="constructor">
 
-</aside>
+</dialog>
 
 </body>
 <!-- test -->

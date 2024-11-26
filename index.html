@@ -7,6 +7,7 @@
     <script src="js/f1.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="style/styles.css"></style>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap" >
     <title>COMP 3512 Assignment 2</title>
 </head>
 <header>
@@ -53,6 +54,7 @@
     <!--Display browse page when user select a season  -->
     <article id="browse">
         <!-- Display all races of the selected season sorted by rounds  -->
+         <section id="container">
         <section id="races">
             <h3 id="raceHeading"></h3>
             <table>
@@ -65,12 +67,25 @@
 
         <!-- Display race results when user clicks race result -->
         <section id="raceResults">
+    
             <!-- Display race info  -->
-            <div id="raceInfo">
-                <table>
-
-                </table>
-            </div>
+           <div id="raceInfo">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Race Name</th>
+                        <th>Round</th>
+                        <th>Year</th>
+                        <th>Circuit Name</th>
+                        <th>Date</th>
+                        <th>URL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rows will be appended here -->
+                </tbody>
+            </table>
+        </div>
 
             <!-- Display qualifying reults sort by position-->
 
@@ -80,9 +95,10 @@
 
                 </table>
              </div>
+             </section>
 
+             <section id="results">
              <!-- Display final result -->
-             
              <!-- Display top 3 drivers -->
               <div id="top3Result">
 
@@ -94,8 +110,9 @@
                  DONT REQUERY THE API, simply sort the data aray in memory -->
                 <table></table>
                </div>
-
-
+               </section>
+            
+               
         </section>
     </article>
 </main>
@@ -112,6 +129,11 @@
 
 <dialog id="constructor">
 
+</dialog>
+
+<dialog id="raceResultDialog">
+    <p>Please select a race result.</p>
+    <button id="closeDialog">Close</button>
 </dialog>
 
 </body>

@@ -101,7 +101,15 @@ button:hover {
 }
 /* Style for browse */
 #qualifyingHeading {
-  padding-top: 10px;
+  padding-top: 5px;
+  padding-bottom: 10px;
+  text-align: center; /* Center the text */
+  margin: 0; /* Remove default margin */
+}
+
+#raceInfoHeading {
+  padding-top: 5px;
+  padding-bottom: 10px;
   text-align: center; /* Center the text */
   margin: 0; /* Remove default margin */
 }
@@ -138,13 +146,15 @@ button:hover {
 }
 
 #raceInfo th {
-  background-color: #dfdfdf;
+  background-color: #a72828;
+  color: white;
 }
 
 #races,
 #raceResult,
 #raceInfo,
-#results {
+#results,
+#qualifying {
   border: 1px solid #ccc;
   padding: 10px;
   background: white;
@@ -156,4 +166,22 @@ button:hover {
 
 .hidden {
   display: none; /* Hide the message by default */
+}
+
+#qualifying table {
+  border: 1px solid #ccc; /* Add a border around the table */
+  border-collapse: collapse; /* Collapse borders for a cleaner look */
+  width: 100%; /* Ensure the table takes full width */
+}
+
+#qualifying table th,
+td {
+  border: 1px solid #ccc; /* Add borders to table headers and cells */
+  padding: 10px; /* Add padding for better spacing */
+  text-align: left; /* Align text to the left */
+}
+
+#qualifying th {
+  background-color: #a72828;
+  color: white;
 }

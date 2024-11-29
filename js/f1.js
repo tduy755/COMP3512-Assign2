@@ -50,7 +50,7 @@ function displaySeasons() {
       // Show the dialog after switching to browse view
       setTimeout(() => {
         raceResultDialog.showModal(); // Show the dialog
-      }, 10); // Delay to ensure the view has switched
+      }, 300); // Delay to ensure the view has switched
     }
   });
 
@@ -58,20 +58,6 @@ function displaySeasons() {
   closeDialogButton.addEventListener("click", () => {
     raceResultDialog.close();
   });
-}
-
-// Function to load races from localStorage or fetch from API
-function loadOrFetchRaces(season) {
-  const storedData = localStorage.getItem(`races_${season}`); // Check localStorage for existing data
-  const loadingSpinner = document.querySelector(".spinner-border"); // Select the loading spinner
-
-  if (storedData) {
-    const data = JSON.parse(storedData); // Parse the stored JSON data
-    populateRacesTable(data, season); // Populate the table with the loaded data
-  } else {
-    loadingSpinner.style.display = "block"; // Show the loading spinner
-    fetchRacesForSeason(season); // Fetch data from the API if not in localStorage
-  }
 }
 
 // Function to fetch races for the selected season
@@ -96,6 +82,67 @@ function fetchRacesForSeason(season) {
       loadingSpinner.style.display = "none"; // Hide the loading spinner after fetching
     });
 }
+
+// Function to load races from localStorage or fetch from API
+function loadOrFetchRaces(season) {
+  const storedData = localStorage.getItem(`races_${season}`); // Check localStorage for existing data
+  const loadingSpinner = document.querySelector(".spinner-border"); // Select the loading spinner
+
+  if (storedData) {
+    const data = JSON.parse(storedData); // Parse the stored JSON data
+    populateRacesTable(data, season); // Populate the table with the loaded data
+  } else {
+    loadingSpinner.style.display = "block"; // Show the loading spinner
+    fetchRacesForSeason(season); // Fetch data from the API if not in localStorage
+  }
+}
+
+function fetchQualifyingForRace(season, raceId) {
+  const url = `${qualifyingAPI}?season=${season}`;
+  console.log("Fetching qualifying data for season:", season);
+
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return response.json();
+    })
+    .then((data) => {
+      if (!data || data.length === 0) {
+        console.warn("No qualifying data available for season", season);
+        return;
+      }
+
+      // Filter qualifying data for the specific race
+      const qualifyingForRace = data.filter((qualifying) => qualifying.race.id === raceId);
+
+      if (qualifyingForRace.length === 0) {
+        console.warn("No qualifying data found for race ID:", raceId);
+      } else {
+        displayQualifyingTable(qualifyingForRace); // Display the filtered data
+      }
+    })
+    .catch((error) => {
+      console.error("There was a problem with the fetch operation:", error);
+    });
+}
+
+
+function loadOrFetchQualifying(season) {
+  const storedData = localStorage.getItem(`qualifying_${season}`);
+  const loadingSpinner = document.querySelector(".spinner-border"); // Select the loading spinner
+
+  if (storedData) {
+    const data = JSON.parse(storedData);
+    //Later call function to display qualifying data
+    displayQualifyingTable(data);
+  } else {
+    loadingSpinner.style.display = "block";
+    fetchQualifyingForRace(season); //fetch the data from API if not in LocalStorage
+  }
+}
+
 
 // Function to populate the races table with data
 function populateRacesTable(data, season) {
@@ -133,7 +180,13 @@ function populateRacesTable(data, season) {
     resultButton.textContent = "Results"; // Button text
     resultButton.onclick = () => {
       resultsButtonClicked = true; // Set to true when the button is clicked
-      displayRaceResults(race); // Call the function to display results for the selected race
+      displayRaceInfo(race); // Call the function to display results for the selected race
+
+      // Fetch and display qualifying data for this specific race
+      const season = race.year; // Assuming `race.year` contains the season
+      const raceId = race.id; // Use the unique race ID to filter qualifying data
+      fetchQualifyingForRace(season, raceId);
+
     };
     resultCell.appendChild(resultButton); // Append button to the result cell
     row.appendChild(roundCell); // Append round cell to the row
@@ -144,7 +197,7 @@ function populateRacesTable(data, season) {
 }
 
 // Function to display race results
-function displayRaceResults(race) {
+function displayRaceInfo(race) {
   const raceInfoTable = document.querySelector("#raceInfo table tbody"); // Select tbody
   raceInfoTable.innerHTML = ""; // Clear existing content
   console.log(race);
@@ -176,9 +229,19 @@ function displayRaceResults(race) {
   raceRow.appendChild(circuitNameCell);
   raceRow.appendChild(dateCell);
   raceRow.appendChild(urlCell);
-
   // Append the row to the tbody
   raceInfoTable.appendChild(raceRow);
+}
+
+function displayQualifyingTable(race) {
+  console.log("Qualifying data:", race);
+
+  const table = document.querySelector("#qualifying table tbody");
+  table.innerHTML = "";
+
+  const row = document.createElement("tr");
+
+
 }
 
 // Function to switch to browse view
@@ -191,11 +254,4 @@ function switchToBrowseView() {
   console.log("Switched to browse view");
 }
 
-// Function to check if the button has been clicked
-function checkResults() {
-  if (!resultsButtonClicked) {
-    alert("Please click the 'Results' button to view race data.");
-  } else {
-    // Proceed with displaying results or any other action
-  }
-}
+

@@ -100,7 +100,11 @@ button:hover {
   margin: 0; /* Remove default margin */
 }
 /* Style for browse */
-
+#qualifyingHeading {
+  padding-top: 10px;
+  text-align: center; /* Center the text */
+  margin: 0; /* Remove default margin */
+}
 #browse {
   display: flex;
   padding: 20px;

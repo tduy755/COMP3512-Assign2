@@ -185,3 +185,19 @@ td {
   background-color: #a72828;
   color: white;
 }
+
+.sort-icon {
+  margin-left: 5px; /* Space between text and icon */
+  cursor: pointer; /* Change cursor to pointer */
+  font-size: 0.8em; /* Adjust icon size */
+  transition: transform 0.2s; /* Smooth transition for hover effect */
+}
+
+#qualifying th:hover .sort-icon {
+  transform: scale(1.2); /* Slightly enlarge icon on hover */
+}
+
+#qualifying th:hover {
+  cursor: pointer;
+  background-color: #470000;
+}

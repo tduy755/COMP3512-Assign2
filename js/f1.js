@@ -97,47 +97,51 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function fetchQualifyingForRace(season, raceId) {
-    const url = `${qualifyingAPI}?season=${season}`;
-    console.log("Fetching qualifying data for season:", season);
-
-    return fetch(url)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        if (!data || data.length === 0) {
-          console.warn("No qualifying data available for season", season);
-          return;
-        }
-
-        // Store the entire season's qualifying data in local storage
-        localStorage.setItem(`qualifying_${season}`, JSON.stringify(data));
-
-        // Filter qualifying data for the specific race
-        const qualifyingForRace = data.filter(
-          (qualifying) => qualifying.race.id === raceId
-        );
-
-        if (qualifyingForRace.length === 0) {
-          console.warn("No qualifying data found for race ID:", raceId);
-        } else {
-          displayQualifyingTable(qualifyingForRace); // Display the filtered data
-        }
-
-        return data; // Return the data for potential further use
-      });
-  }
-
-  function loadOrFetchQualifying(season, raceId) {
     const storedData = localStorage.getItem(`qualifying_${season}`);
-    const loadingSpinner = document.querySelector(".spinner-border");
+    const loadingSpinner = document.querySelector("#qualifyingSpinner"); // Select the qualifying spinner
 
-    loadingSpinner.style.display = "block";
+    // Show the loading spinner if data is not in local storage
+    if (!storedData) {
+      loadingSpinner.style.display = "block"; // Show the spinner
 
-    if (storedData) {
+      const url = `${qualifyingAPI}?season=${season}`; // Construct the API URL
+      console.log("Fetching qualifying data for season:", season);
+
+      return fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json(); // Parse the JSON from the response
+        })
+        .then((data) => {
+          if (!data || data.length === 0) {
+            console.warn("No qualifying data available for season", season);
+            return;
+          }
+
+          // Store the entire season's qualifying data in local storage
+          localStorage.setItem(`qualifying_${season}`, JSON.stringify(data));
+
+          // Filter qualifying data for the specific race
+          const qualifyingForRace = data.filter(
+            (qualifying) => qualifying.race.id === raceId
+          );
+
+          if (qualifyingForRace.length === 0) {
+            console.warn("No qualifying data found for race ID:", raceId);
+          } else {
+            displayQualifyingTable(qualifyingForRace); // Display the filtered data
+          }
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+        })
+        .finally(() => {
+          loadingSpinner.style.display = "none"; // Hide the loading spinner when done
+        });
+    } else {
+      // If data is found in local storage, parse and display it
       const data = JSON.parse(storedData);
 
       // Filter the stored data for the specific race
@@ -146,28 +150,8 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       displayQualifyingTable(qualifyingForRace); // Display cached data
-    } else {
-      loadingSpinner.style.display = "block"; // Show the spinner
-
-      fetchQualifyingForRace(season, raceId).finally(() => {
-        loadingSpinner.style.display = "none"; // Hide the spinner when the fetch is complete
-      });
     }
   }
-
-  //Check if Qualifying data is stored locally
-  function checkLocalStorageForQualifying(season) {
-    const storedData = localStorage.getItem(`qualifying_${season}`);
-
-    if (storedData) {
-      console.log("Data is stored for season", season);
-    } else {
-      console.log("No data stored for season", season);
-    }
-  }
-
-  // Usage example
-  // checkLocalStorageForQualifying(2020);
 
   // Function to populate the races table with data
   function populateRacesTable(data, season) {
@@ -267,9 +251,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add click event listeners to table headers
     thead.querySelectorAll("th").forEach((th) => {
-      th.addEventListener("click", () =>
-        sortTable(th.textContent.toLowerCase())
-      );
+      th.addEventListener("click", () => {
+        const column = th.getAttribute("data-column"); // Get the column identifier from data-column attribute
+        sortTable(column); // Call sortTable with the correct column identifier
+      });
     });
 
     // Render the initial table
@@ -315,6 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function sortTable(column) {
     const tbody = document.querySelector("#qualifying table tbody");
     const originalData = JSON.parse(tbody.dataset.originalData);
+    const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
 
     const sortedData = originalData.slice().sort((a, b) => {
       let valueA, valueB;
@@ -348,17 +334,35 @@ document.addEventListener("DOMContentLoaded", () => {
           return 0;
       }
 
-      const sortOrder = tbody.dataset.sortOrder === "asc" ? -1 : 1;
-
-      if (valueA < valueB) return -1 * sortOrder;
-      if (valueA > valueB) return 1 * sortOrder;
-      return 0;
+      return sortOrder === "asc"
+        ? valueA < valueB
+          ? -1
+          : 1
+        : valueA > valueB
+        ? -1
+        : 1;
     });
 
-    tbody.dataset.sortOrder =
-      tbody.dataset.sortOrder === "asc" ? "desc" : "asc";
+    tbody.dataset.sortOrder = sortOrder; // Update the sort order
+
+    // Update the sort icons
+    updateSortIcons(column, sortOrder);
 
     renderQualifyingTable(sortedData);
+  }
+
+  function updateSortIcons(column, sortOrder) {
+    const headers = document.querySelectorAll("#qualifying table th");
+    headers.forEach((header) => {
+      const icon = header.querySelector(".sort-icon");
+      if (header.dataset.column === column) {
+        icon.textContent = sortOrder === "asc" ? "↑" : "↓"; // Update icon based on sort order
+        icon.setAttribute("data-sort", sortOrder); // Update data-sort attribute
+      } else {
+        icon.textContent = "↑"; // Reset other icons to default
+        icon.setAttribute("data-sort", "asc");
+      }
+    });
   }
 
   // Function to switch to browse view

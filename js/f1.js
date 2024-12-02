@@ -263,6 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function renderQualifyingTable(data) {
     const tbody = document.querySelector("#qualifying table tbody");
+    const closeBtnDriver = document.querySelector("#closeDriverDialog");
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -271,11 +272,30 @@ document.addEventListener("DOMContentLoaded", () => {
       const position = document.createElement("td");
       position.textContent = q.position;
 
+      // Create hyperlink for driver name
       const driverName = document.createElement("td");
-      driverName.textContent = `${q.driver.forename} ${q.driver.surname}`;
+      const driverLink = document.createElement("a");
+      driverLink.textContent = `${q.driver.forename} ${q.driver.surname}`;
+      driverLink.href = "#"; // Prevent default link behavior
+      driverLink.onclick = () => {
+        // Open driver dialog
+        document.querySelector("#driver").showModal();
+      };
+      closeBtnDriver.onclick = () => {
+        document.querySelector("#driver").close();
+      };
+      driverName.appendChild(driverLink); // Append link to the driver cell
 
+      // Create hyperlink for constructor
       const constructor = document.createElement("td");
-      constructor.textContent = q.constructor.name;
+      const constructorLink = document.createElement("a");
+      constructorLink.textContent = q.constructor.name;
+      constructorLink.href = "#"; // Prevent default link behavior
+      constructorLink.onclick = () => {
+        // Open constructor dialog
+        document.querySelector("#constructor").showModal();
+      };
+      constructor.appendChild(constructorLink); // Append link to the constructor cell
 
       const q1 = document.createElement("td");
       q1.textContent = q.q1;

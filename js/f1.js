@@ -153,6 +153,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function fetchResultsForRace(season, raceId) {
+    const storedData = localStorage.getItem(`results_${season}`);
+    const loadingSpinner = document.querySelector("#resultsSpinner"); // Select the results spinner
+
+    if (!storedData) {
+      loadingSpinner.style.display = "block"; // Show the spinner
+      const url = `${resultAPI}?season=${season}`; // Construct the API URL
+      console.log("Fetching results data for season:", season);
+
+      return fetch(url)
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json(); // Parse the JSON from the response
+        })
+        .then((data) => {
+          localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
+          displayResultsTable(data); // Call the function to display the results table
+        })
+        .then((data) => {
+          if (!data || data.length === 0) {
+            console.warn("No results data found for season", season);
+            return;
+          }
+          localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
+          displayTop3Results(data); // Call the function to display the top 3 results
+          displayResultsTable(data); // Call the function to display the results table
+        })
+        .catch((error) => {
+          console.error("There was a problem with the fetch operation:", error);
+        })
+        .finally(() => {
+          loadingSpinner.style.display = "none"; // Hide the loading spinner when done
+        });
+    } else {
+      const data = JSON.parse(storedData);
+      const resultsForRace = data.filter((result) => result.race.id === raceId);
+      displayTop3Results(resultsForRace); // Display cached data
+      displayResultsTable(resultsForRace); // Display cached data
+    }
+  }
+
   // Function to populate the races table with data
   function populateRacesTable(data, season) {
     const racesTable = document.querySelector("#races table"); // Select the races table
@@ -195,6 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const season = race.year; // Assuming `race.year` contains the season
         const raceId = race.id; // Use the unique race ID to filter qualifying data
         fetchQualifyingForRace(season, raceId);
+        fetchResultsForRace(season, raceId);
       };
       resultCell.appendChild(resultButton); // Append button to the result cell
       row.appendChild(roundCell); // Append round cell to the row
@@ -384,6 +428,37 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+
+  function displayTop3Results(data) {
+    const top3Drivers = data.filter((result) => result.position <= 3); // Get top 3 drivers
+
+    top3Drivers.forEach((result) => {
+      const driverBox = document.querySelector(`#driver${result.position}`); // Select the existing driver box
+
+      // Create content for the driver box
+      const positionHeading = driverBox.querySelector("h3");
+      positionHeading.textContent = getOrdinalSuffix(result.position); // Get the ordinal suffix
+
+      const nameParagraph = driverBox.querySelector("p");
+      nameParagraph.textContent = `${result.driver.forename} ${result.driver.surname}`; // Assuming result.driver.name contains the driver's name
+    });
+
+    // Simplified helper function to get the ordinal suffix for the first three positions
+    function getOrdinalSuffix(position) {
+      switch (position) {
+        case 1:
+          return "1st";
+        case 2:
+          return "2nd";
+        case 3:
+          return "3rd";
+        default:
+          return position + "th"; // Fallback for any other position (not needed for top 3)
+      }
+    }
+  }
+
+  function displayResultsTable(data) {}
 
   // Function to switch to browse view
   function switchToBrowseView() {

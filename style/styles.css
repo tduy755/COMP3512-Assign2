@@ -129,7 +129,7 @@ button:hover {
 }
 
 #raceResults {
-  width: 50%; /* Adjust width as needed */
+  width: 45%; /* Adjust width as needed */
 }
 
 #raceInfo table {
@@ -186,6 +186,36 @@ td {
   color: white;
 }
 
+/* results section css */
+#results {
+  width: 30%;
+}
+
+#finalResultHeading {
+  padding-top: 5px;
+  padding-bottom: 10px;
+  text-align: center; /* Center the text */
+  margin: 0; /* Remove default margin */
+}
+
+#top3Result {
+  display: flex; /* Use flexbox for horizontal layout */
+  justify-content: space-between; /* Space between the boxes */
+}
+#top3Result h3 {
+  text-align: center;
+}
+
+.driver-box {
+  width: 200px; /* Set a fixed width for each box */
+  height: 150px; /* Set a fixed height for each box */
+  border: 1px solid #ccc; /* Add a border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 10px; /* Padding inside the box */
+  background-color: #f9f9f9; /* Light background color */
+  margin: 0 5px; /* Space between boxes */
+}
+/* ========================================= */
 .sort-icon {
   margin-left: 5px; /* Space between text and icon */
   cursor: pointer; /* Change cursor to pointer */

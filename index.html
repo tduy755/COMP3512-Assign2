@@ -112,20 +112,42 @@
              </div>
              </section>
 
-             <section id="results">
+              <section id="results">
+                <div id="resultsSpinner" class="spinner-border m-5" role="status" style="display: none;"></div>
+
+
              <!-- Display final result -->
+              <h3 id="finalResultHeading">Results</h3>
              <!-- Display top 3 drivers -->
               <div id="top3Result">
-
+                <div class="driver-box" id="driver1">
+                    <h3></h3>
+                    <p></p>
+                </div>
+                <div class="driver-box" id="driver2">
+                    <h3></h3>
+                    <p></p>
+                </div>
+                <div class="driver-box" id="driver3">
+                    <h3></h3>
+                    <p></p>
+                </div>
               </div>
+
 
               <!-- Display all drivers result -->
                <div id="driverResults">
                  <!-- Cliking on the table labels will change the sort order
                  DONT REQUERY THE API, simply sort the data aray in memory -->
-                <table></table>
+                <table>
+
+
+
+
+                </table>
                </div>
                </section>
+
             
                
         </section>

@@ -255,7 +255,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(race);
 
     const raceRow = document.createElement("tr");
-
+    const closeBtnCircuit = document.querySelector("#closeCircuitDialog");
     // Create cells for each required detail
     const raceNameCell = document.createElement("td");
     raceNameCell.textContent = race.name; // Race Name
@@ -263,8 +263,21 @@ document.addEventListener("DOMContentLoaded", () => {
     roundCell.textContent = race.round; // Round Number
     const yearCell = document.createElement("td");
     yearCell.textContent = race.year; // Year
+    
     const circuitNameCell = document.createElement("td");
-    circuitNameCell.textContent = race.circuit.name; // Circuit Name
+    const circuitLink = document.createElement("a");
+    circuitLink.textContent = race.circuit.name; // Circuit Name
+
+    circuitLink.href = "#"; // Prevent default link behavior
+    circuitLink.onclick = () => {
+      // Open circuit dialog
+      document.querySelector("#circuit").showModal();
+    };
+    closeBtnCircuit.onclick = () => {
+      document.querySelector("#circuit").close();
+    };
+    circuitNameCell.appendChild(circuitLink); // Append link to the circuit cell
+
     const dateCell = document.createElement("td");
     dateCell.textContent = race.date; // Date
     const urlCell = document.createElement("td");
@@ -297,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
     thead.querySelectorAll("th").forEach((th) => {
       th.addEventListener("click", () => {
         const column = th.getAttribute("data-column"); // Get the column identifier from data-column attribute
-        sortTable(column); // Call sortTable with the correct column identifier
+        sortQualifyingTable(column); // Call sortTable with the correct column identifier
       });
     });
 
@@ -308,6 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderQualifyingTable(data) {
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
+    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -339,6 +353,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // Open constructor dialog
         document.querySelector("#constructor").showModal();
       };
+      closeBtnConstructor.onclick = () => {
+        document.querySelector("#constructor").close();
+      };
       constructor.appendChild(constructorLink); // Append link to the constructor cell
 
       const q1 = document.createElement("td");
@@ -361,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function sortTable(column) {
+  function sortQualifyingTable(column) {
     const tbody = document.querySelector("#qualifying table tbody");
     const originalData = JSON.parse(tbody.dataset.originalData);
     const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order

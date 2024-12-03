@@ -10,6 +10,21 @@ let resultsButtonClicked = false;
 document.addEventListener("DOMContentLoaded", () => {
   displaySeasons(); // Call the function to set up the seasons and hide the browse section
 
+  document.querySelectorAll("#qualifying table th").forEach((header) => {
+    header.addEventListener("click", () => {
+        const column = header.dataset.column; // Get the column identifier
+        sortQualifyingTable(column); // Call the sort function for qualifying
+    });
+});
+
+// Add event listeners to the driver results table headers for sorting
+document.querySelectorAll("#driverResults table th").forEach((header) => {
+    header.addEventListener("click", () => {
+        const column = header.dataset.column; // Get the column identifier
+        sortDriverResultsTable(column); // Call the sort function for driver results
+    });
+});
+
   // Function to display seasons and hide the browse section
   function displaySeasons() {
     // Hide the browse article initially
@@ -96,105 +111,73 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function fetchQualifyingForRace(season, raceId) {
+ function fetchQualifyingForRace(season, raceId) {
     const storedData = localStorage.getItem(`qualifying_${season}`);
     const loadingSpinner = document.querySelector("#qualifyingSpinner"); // Select the qualifying spinner
 
     // Show the loading spinner if data is not in local storage
     if (!storedData) {
-      loadingSpinner.style.display = "block"; // Show the spinner
+        loadingSpinner.style.display = "block"; // Show the spinner
 
-      const url = `${qualifyingAPI}?season=${season}`; // Construct the API URL
-      console.log("Fetching qualifying data for season:", season);
+        const url = `${qualifyingAPI}?season=${season}`; // Construct the API URL
+        console.log("Fetching qualifying data for season:", season);
 
-      return fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json(); // Parse the JSON from the response
-        })
-        .then((data) => {
-          if (!data || data.length === 0) {
-            console.warn("No qualifying data available for season", season);
-            return;
-          }
-
-          // Store the entire season's qualifying data in local storage
-          localStorage.setItem(`qualifying_${season}`, JSON.stringify(data));
-
-          // Filter qualifying data for the specific race
-          const qualifyingForRace = data.filter(
-            (qualifying) => qualifying.race.id === raceId
-          );
-
-          if (qualifyingForRace.length === 0) {
-            console.warn("No qualifying data found for race ID:", raceId);
-          } else {
-            displayQualifyingTable(qualifyingForRace); // Display the filtered data
-          }
-        })
-        .catch((error) => {
-          console.error("There was a problem with the fetch operation:", error);
-        })
-        .finally(() => {
-          loadingSpinner.style.display = "none"; // Hide the loading spinner when done
-        });
+        return fetch(url)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json(); // Parse the JSON from the response
+            })
+            .then((data) => {
+                localStorage.setItem(`qualifying_${season}`, JSON.stringify(data)); // Store the entire season's qualifying data in local storage
+                renderTable(data, 'qualifying', raceId); // Call the function to render the qualifying table with filtering
+            })
+            .catch((error) => {
+                console.error("There was a problem with the fetch operation:", error);
+            })
+            .finally(() => {
+                loadingSpinner.style.display = "none"; // Hide the loading spinner when done
+            });
     } else {
-      // If data is found in local storage, parse and display it
-      const data = JSON.parse(storedData);
-
-      // Filter the stored data for the specific race
-      const qualifyingForRace = data.filter(
-        (qualifying) => qualifying.race.id === raceId
-      );
-
-      displayQualifyingTable(qualifyingForRace); // Display cached data
+        const data = JSON.parse(storedData);
+        renderTable(data, 'qualifying', raceId); // Render the cached qualifying data with filtering
     }
-  }
+}
 
   function fetchResultsForRace(season, raceId) {
     const storedData = localStorage.getItem(`results_${season}`);
     const loadingSpinner = document.querySelector("#resultsSpinner"); // Select the results spinner
 
     if (!storedData) {
-      loadingSpinner.style.display = "block"; // Show the spinner
-      const url = `${resultAPI}?season=${season}`; // Construct the API URL
-      console.log("Fetching results data for season:", season);
+        loadingSpinner.style.display = "block"; // Show the spinner
+        const url = `${resultAPI}?season=${season}`; // Construct the API URL
+        console.log("Fetching results data for season:", season);
 
-      return fetch(url)
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json(); // Parse the JSON from the response
-        })
-        .then((data) => {
-          localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
-          displayResultsTable(data); // Call the function to display the results table
-        })
-        .then((data) => {
-          if (!data || data.length === 0) {
-            console.warn("No results data found for season", season);
-            return;
-          }
-          localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
-          displayTop3Results(data); // Call the function to display the top 3 results
-          displayResultsTable(data); // Call the function to display the results table
-        })
-        .catch((error) => {
-          console.error("There was a problem with the fetch operation:", error);
-        })
-        .finally(() => {
-          loadingSpinner.style.display = "none"; // Hide the loading spinner when done
-        });
+        return fetch(url)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json(); // Parse the JSON from the response
+            })
+            .then((data) => {
+                localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
+                renderTable(data, 'results', raceId); // Call the function to render the results table with filtering
+                displayTop3Results(data); // Call to display the top 3 results
+            })
+            .catch((error) => {
+                console.error("There was a problem with the fetch operation:", error);
+            })
+            .finally(() => {
+                loadingSpinner.style.display = "none"; // Hide the loading spinner when done
+            });
     } else {
-      const data = JSON.parse(storedData);
-      const resultsForRace = data.filter((result) => result.race.id === raceId);
-      displayTop3Results(resultsForRace); // Display cached data
-      displayResultsTable(resultsForRace); // Display cached data
+        const data = JSON.parse(storedData);
+        renderTable(data, 'driverResults', raceId); // Render the cached results data with filtering
+        displayTop3Results(data); // Call to display the top 3 results
     }
-  }
+}
 
   // Function to populate the races table with data
   function populateRacesTable(data, season) {
@@ -255,7 +238,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(race);
 
     const raceRow = document.createElement("tr");
-    const closeBtnCircuit = document.querySelector("#closeCircuitDialog");
+
     // Create cells for each required detail
     const raceNameCell = document.createElement("td");
     raceNameCell.textContent = race.name; // Race Name
@@ -263,21 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
     roundCell.textContent = race.round; // Round Number
     const yearCell = document.createElement("td");
     yearCell.textContent = race.year; // Year
-    
     const circuitNameCell = document.createElement("td");
-    const circuitLink = document.createElement("a");
-    circuitLink.textContent = race.circuit.name; // Circuit Name
-
-    circuitLink.href = "#"; // Prevent default link behavior
-    circuitLink.onclick = () => {
-      // Open circuit dialog
-      document.querySelector("#circuit").showModal();
-    };
-    closeBtnCircuit.onclick = () => {
-      document.querySelector("#circuit").close();
-    };
-    circuitNameCell.appendChild(circuitLink); // Append link to the circuit cell
-
+    circuitNameCell.textContent = race.circuit.name; // Circuit Name
     const dateCell = document.createElement("td");
     dateCell.textContent = race.date; // Date
     const urlCell = document.createElement("td");
@@ -298,6 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
     raceInfoTable.appendChild(raceRow);
   }
 
+<<<<<<< HEAD
+=======
   function displayQualifyingTable(qualifying) {
     const table = document.querySelector("#qualifying table");
     const thead = table.querySelector("thead");
@@ -310,7 +282,7 @@ document.addEventListener("DOMContentLoaded", () => {
     thead.querySelectorAll("th").forEach((th) => {
       th.addEventListener("click", () => {
         const column = th.getAttribute("data-column"); // Get the column identifier from data-column attribute
-        sortQualifyingTable(column); // Call sortTable with the correct column identifier
+        sortTable(column); // Call sortTable with the correct column identifier
       });
     });
 
@@ -321,7 +293,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderQualifyingTable(data) {
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -353,9 +324,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Open constructor dialog
         document.querySelector("#constructor").showModal();
       };
-      closeBtnConstructor.onclick = () => {
-        document.querySelector("#constructor").close();
-      };
       constructor.appendChild(constructorLink); // Append link to the constructor cell
 
       const q1 = document.createElement("td");
@@ -378,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  function sortQualifyingTable(column) {
+  function sortTable(column) {
     const tbody = document.querySelector("#qualifying table tbody");
     const originalData = JSON.parse(tbody.dataset.originalData);
     const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
@@ -445,6 +413,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+>>>>>>> parent of 8096084 (added empty dialog for circuit name)
 
   function displayTop3Results(data) {
     const top3Drivers = data.filter((result) => result.position <= 3); // Get top 3 drivers
@@ -475,7 +444,218 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function displayResultsTable(data) {}
+  function renderTable(data, type, raceId = null) {
+    const tbody = document.querySelector(`#${type} table tbody`);
+    console.log(`Rendering table for ${type}`); // Log when rendering starts
+    console.log("Original Data being rendered:", data); // Log the original data being rendered
+    console.log(`Number of items to render: ${data.length}`); // Log the number of items
+
+    tbody.innerHTML = ""; // Clear existing content
+
+    // Set the original data for sorting
+    tbody.dataset.originalData = JSON.stringify(data); // Set the original data
+    console.log("Original Data Set:", tbody.dataset.originalData); // Log the original data
+
+    // Filter data based on type and raceId if provided
+    let filteredData;
+    if (type === 'qualifying') {
+        // Log the raceId being used for filtering
+        console.log("Filtering qualifying data with raceId:", raceId);
+        filteredData = raceId ? data.filter(qualifying => qualifying.race.id === raceId) : data;
+    } else if (type === 'driverResults') {
+        filteredData = data; // Use all data for driverResults
+    }
+
+    // Log filtered data to check if it's empty
+    console.log("Filtered Data:", filteredData); // Log the filtered data
+    console.log(`Number of filtered items: ${filteredData.length}`); // Log the number of filtered items
+
+    // Check if filteredData is empty
+    if (filteredData.length === 0) {
+        const row = document.createElement("tr");
+        const cell = document.createElement("td");
+        cell.colSpan = 5; // Adjust based on the number of columns in your table
+        cell.textContent = "No data available for the selected race.";
+        row.appendChild(cell);
+        tbody.appendChild(row);
+        return; // Exit the function if there's no data to render
+    }
+
+    // Render the filtered data
+    filteredData.forEach((item) => {
+        const row = document.createElement("tr");
+
+        if (type === "qualifying") {
+            const position = document.createElement("td");
+            position.textContent = item.position;
+
+            const driverName = document.createElement("td");
+            const driverLink = document.createElement("a");
+            driverLink.textContent = `${item.driver.forename} ${item.driver.surname}`;
+            driverLink.href = "#"; // Prevent default link behavior
+            driverName.appendChild(driverLink);
+
+            const constructor = document.createElement("td");
+            const constructorLink = document.createElement("a");
+            constructorLink.textContent = item.constructor.name;
+            constructorLink.href = "#"; // Prevent default link behavior
+            constructor.appendChild(constructorLink);
+
+            const q1 = document.createElement("td");
+            q1.textContent = item.q1;
+
+            const q2 = document.createElement("td");
+            q2.textContent = item.q2;
+
+            const q3 = document.createElement("td");
+            q3.textContent = item.q3;
+
+            row.appendChild(position);
+            row.appendChild(driverName);
+            row.appendChild(constructor);
+            row.appendChild(q1);
+            row.appendChild(q2);
+            row.appendChild(q3);
+        } else if (type === "driverResults") {
+            const position = document.createElement("td");
+            position.textContent = item.position;
+
+            const driverName = document.createElement("td");
+            const driverLink = document.createElement("a");
+            driverLink.textContent = `${item.driver.forename} ${item.driver.surname}`;
+            driverLink.href = "#"; // Prevent default link behavior
+            driverName.appendChild(driverLink);
+
+            const constructor = document.createElement("td");
+            const constructorLink = document.createElement("a");
+            constructorLink.textContent = item.constructor.name;
+            constructorLink.href = "#"; // Prevent default link behavior
+            constructor.appendChild(constructorLink);
+
+            const laps = document.createElement("td");
+            laps.textContent = item.laps; // Laps completed
+
+            const points = document.createElement("td");
+            points.textContent = item.points; // Points earned
+
+            row.appendChild(position);
+            row.appendChild(driverName);
+            row.appendChild(constructor);
+            row.appendChild(laps);
+            row.appendChild(points);
+        }
+
+        tbody.appendChild(row); // Append the row to the table body
+    });
+}
+
+  function sortQualifyingTable(column) {
+    const tbody = document.querySelector("#qualifying table tbody");
+    const originalData = JSON.parse(tbody.dataset.originalData); // Get the original data
+    const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
+
+    console.log(`Sorting qualifying by ${column}`); // Log sorting action
+
+    const sortedData = originalData.slice().sort((a, b) => {
+        let valueA, valueB;
+
+        switch (column) {
+            case "position":
+                valueA = parseInt(a.position);
+                valueB = parseInt(b.position);
+                break;
+            case "name":
+                valueA = `${a.driver.forename} ${a.driver.surname}`;
+                valueB = `${b.driver.forename} ${b.driver.surname}`;
+                break;
+            case "constructor":
+                valueA = a.constructor.name;
+                valueB = b.constructor.name;
+                break;
+            case "q1":
+                valueA = a.q1;
+                valueB = b.q1;
+                break;
+            case "q2":
+                valueA = a.q2;
+                valueB = b.q2;
+                break;
+            case "q3":
+                valueA = a.q3;
+                valueB = b.q3;
+                break;
+            default:
+                return 0;
+        }
+
+        return sortOrder === "asc" ? (valueA < valueB ? -1 : 1) : (valueA > valueB ? -1 : 1);
+    });
+
+    console.log("Sorted Qualifying Data:", sortedData); // Log the sorted data
+
+    tbody.dataset.sortOrder = sortOrder; // Update the sort order
+    renderTable(sortedData, 'qualifying'); // Call renderTable to update the displayed data
+    updateSortIcons(column, sortOrder, 'qualifying'); // Update the sort icons
+}
+
+function sortDriverResultsTable(column) {
+  const tbody = document.querySelector("#driverResults table tbody");
+  const originalData = JSON.parse(tbody.dataset.originalData); // Get the original data
+  const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
+
+  console.log(`Sorting driver results by ${column}`); // Log sorting action
+
+  const sortedData = originalData.slice().sort((a, b) => {
+      let valueA, valueB;
+
+      switch (column) {
+          case "position":
+              valueA = parseInt(a.position);
+              valueB = parseInt(b.position);
+              break;
+          case "name":
+              valueA = `${a.driver.forename} ${a.driver.surname}`;
+              valueB = `${b.driver.forename} ${b.driver.surname}`;
+              break;
+          case "constructor":
+              valueA = a.constructor.name;
+              valueB = b.constructor.name;
+              break;
+          case "laps":
+              valueA = parseInt(a.laps);
+              valueB = parseInt(b.laps);
+              break;
+          case "pts":
+              valueA = parseInt(a.points);
+              valueB = parseInt(b.points);
+              break;
+          default:
+              return 0;
+      }
+
+      return sortOrder === "asc" ? (valueA < valueB ? -1 : 1) : (valueA > valueB ? -1 : 1);
+  });
+
+  console.log("Sorted Driver Results Data:", sortedData); // Log the sorted data
+
+  tbody.dataset.sortOrder = sortOrder; // Update the sort order
+  renderTable(sortedData, 'driverResults'); // Call renderTable to update the displayed data
+  updateSortIcons(column, sortOrder, 'driverResults'); // Update the sort icons
+}
+
+  function updateSortIcons(column, sortOrder, type) {
+    const headers = document.querySelectorAll(`#${type} table th`);
+    headers.forEach((header) => {
+      const icon = header.querySelector(".sort-icon");
+      if (header.dataset.column === column) {
+        icon.textContent = sortOrder === "asc" ? "↑" : "↓"; // Update icon based on sort order
+        icon.setAttribute("data-sort", sortOrder); // Update data-sort attribute
+      } else {
+        icon.textContent = "↑"; // Reset other icons to default
+        icon.setAttribute("data-sort", "asc");
+      }
+    });
+  }
 
   // Function to switch to browse view
   function switchToBrowseView() {

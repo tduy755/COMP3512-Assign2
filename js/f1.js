@@ -427,12 +427,12 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.dataset.sortOrder = sortOrder; // Update the sort order
 
     // Update the sort icons
-    updateSortIcons(column, sortOrder);
+    updateQualifyingSortIcons(column, sortOrder);
 
     renderQualifyingTable(sortedData);
   }
 
-  function updateSortIcons(column, sortOrder) {
+  function updateQualifyingSortIcons(column, sortOrder) {
     const headers = document.querySelectorAll("#qualifying table th");
     headers.forEach((header) => {
       const icon = header.querySelector(".sort-icon");
@@ -552,6 +552,73 @@ document.addEventListener("DOMContentLoaded", () => {
       tbody.appendChild(row);
     })  ;
   }
+
+  function sortResultsTable(column) {
+    // Implement sorting logic here
+    const tbody = document.querySelector("#driverResults table tbody");
+    const originalData = JSON.parse(tbody.dataset.originalData);
+    const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
+
+    const sortedData = originalData.slice().sort((a, b) => {
+      let valueA, valueB;
+
+      switch (column) {
+        case "position":
+          valueA = parseInt(a.position);
+          valueB = parseInt(b.position);
+          break;
+        case "name":
+          valueA = `${a.driver.forename} ${a.driver.surname}`;
+          valueB = `${b.driver.forename} ${b.driver.surname}`;
+          break;
+        case "constructor":
+          valueA = a.constructor.name;
+          valueB = b.constructor.name;
+          break;
+        case "laps":
+          valueA = a.laps;
+          valueB = b.laps;
+          break;
+        case "points":
+          valueA = parseInt(a.points);
+          valueB = parseInt(b.points);
+          break;
+        default:
+          return 0;
+      }
+
+      return sortOrder === "asc"
+        ? valueA < valueB
+          ? -1
+          : 1
+        : valueA > valueB
+        ? -1
+        : 1;
+    });
+
+    tbody.dataset.sortOrder = sortOrder; // Update the sort order
+
+    // Update the sort icons
+    updateResultsSortIcons(column, sortOrder);
+
+    renderResultsTable(sortedData);
+  }
+
+  function updateResultsSortIcons(column, sortOrder) {
+    const headers = document.querySelectorAll("#driverResults table th");
+    headers.forEach((header) => {
+      const icon = header.querySelector(".sort-icon");
+      if (header.dataset.column === column) {
+        icon.textContent = sortOrder === "asc" ? "↑" : "↓"; // Update icon based on sort order
+        icon.setAttribute("data-sort", sortOrder); // Update data-sort attribute
+      } else {
+        icon.textContent = "↑"; // Reset other icons to default
+        icon.setAttribute("data-sort", "asc");
+      }
+    });
+  }
+
+
   // Function to switch to browse view
   function switchToBrowseView() {
     const homeArticle = document.querySelector("#home");
@@ -561,3 +628,5 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("Switched to browse view");
   }
 });
+
+

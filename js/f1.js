@@ -560,4 +560,23 @@ document.addEventListener("DOMContentLoaded", () => {
     browseArticle.style.display = "block"; // Show the browse section
     console.log("Switched to browse view");
   }
+  // Function to open the circuit popup and populate it with the selected circuit's details
+  function showCircuitDetails(circuitId) {
+    const circuit = circuits.find(circuit => circuit.id === circuitId);
+    
+    if (circuit) {
+        // Populate dialog with circuit details using querySelector
+        document.querySelector("#circuitName").textContent = circuit.name;
+        document.querySelector("#circuitLocation").textContent = circuit.location;
+        document.querySelector("#circuitCountry").textContent = circuit.country;
+        document.querySelector("#circuitURL").href = circuit.url;
+        
+        // Open the dialog
+        document.querySelector("#circuit").showModal();
+    }
+  }
+  
+  document.querySelector("#closeCircuitDialog").addEventListener("click", function () {
+    document.querySelector("#circuit").close();
+  });
 });

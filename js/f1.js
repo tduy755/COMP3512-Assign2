@@ -247,7 +247,24 @@ document.querySelectorAll("#driverResults table th").forEach((header) => {
     const yearCell = document.createElement("td");
     yearCell.textContent = race.year; // Year
     const circuitNameCell = document.createElement("td");
+<<<<<<< Updated upstream
     circuitNameCell.textContent = race.circuit.name; // Circuit Name
+=======
+    const circuitLink = document.createElement("a");
+    circuitLink.textContent = race.circuit.name; // Circuit Name
+
+    circuitLink.href = "#"; // Prevent default link behavior
+    circuitLink.onclick = () => {
+      // Open circuit dialog
+      document.querySelector("#circuit").showModal();
+      showCircuitDetails(race.circuit.id);
+    };
+    closeBtnCircuit.onclick = () => {
+      document.querySelector("#circuit").close();
+    };
+    circuitNameCell.appendChild(circuitLink); // Append link to the circuit cell
+
+>>>>>>> Stashed changes
     const dateCell = document.createElement("td");
     dateCell.textContent = race.date; // Date
     const urlCell = document.createElement("td");
@@ -665,4 +682,33 @@ function sortDriverResultsTable(column) {
     browseArticle.style.display = "block"; // Show the browse section
     console.log("Switched to browse view");
   }
+<<<<<<< Updated upstream
+=======
+  let circuits = [];
+  // Populate circuits (e.g., from an API response)
+fetch("https://www.randyconnolly.com/funwebdev/3rd/api/f1/races.php")
+.then(response => response.json())
+.then(data => {
+    circuits = data.map(race => race.circuit); // Extract circuits from races
+    console.log("Circuits loaded:", circuits);
+})
+.catch(error => console.error("Error fetching circuits:", error));
+  // Function to open the circuit popup and populate it with the selected circuit's details
+  function showCircuitDetails(circuitId) {
+    // Ensure circuitId matches type and value
+    const circuit = circuits.find(circuit => circuit.id === circuitId);
+    
+    if (circuit) {
+        // Populate dialog with circuit details
+        document.querySelector("#circuitName").textContent = circuit.name || "Unknown";
+        document.querySelector("#circuitLocation").textContent = circuit.location || "Unknown";
+        document.querySelector("#circuitCountry").textContent = circuit.country || "Unknown";
+        document.querySelector("#circuitURL").href = circuit.url || "#";
+    } else {
+        console.error(`Circuit with ID ${circuitId} not found.`);
+    }
+}
+  
+
+>>>>>>> Stashed changes
 });

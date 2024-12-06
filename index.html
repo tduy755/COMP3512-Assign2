@@ -83,7 +83,7 @@
                                     <th>Year</th>
                                     <th>Circuit Name</th>
                                     <th>Date</th>
-                                    <th>URL</th>
+                                    <th id="circuitURL">URL</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -188,10 +188,13 @@
         <h3>Circuit Information</h3>
         <div id="circuitDetails">
             <!-- Circuit details will be populated here -->
-        <p><strong>Name:</strong> <span id="circuitName"></span></p>
-        <p><strong>Location:</strong> <span id="circuitLocation"></span></p>
-        <p><strong>Country:</strong> <span id="circuitCountry"></span></p>
-        <p><strong>More Info:</strong> <a href="#" id="circuitURL" target="_blank">Click here</a></p>
+              <img src="images/Charles_Leclerc_2022.jpg" alt="Circuit Image" class="circuit-image">
+        <ul>
+            <li><strong>Name:</strong> <span id="circuitName"></span></li>
+            <li><strong>Location:</strong> <span id="circuitLocation"></span></li>
+            <li><strong>Country:</strong> <span id="circuitCountry"></span></li>
+            <li><strong>More Info:</strong> <a href="#" id="circuitURL" target="_blank">Click here</a></li>
+        </ul>
         </div>
         <button id="closeCircuitDialog">Close</button>
     </dialog>

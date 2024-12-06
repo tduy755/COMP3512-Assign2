@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
     circuitLink.href = "#"; // Prevent default link behavior
     circuitLink.onclick = () => {
       // Open circuit dialog
-      document.querySelector("#circuit").showModal();
+      openCircuitDialog(race.circuit);
     };
     closeBtnCircuit.onclick = () => {
       document.querySelector("#circuit").close();
@@ -616,6 +616,17 @@ document.addEventListener("DOMContentLoaded", () => {
         icon.setAttribute("data-sort", "asc");
       }
     });
+  }
+
+  function openCircuitDialog(circuit) {
+    // Populate circuit details here if needed
+    document.getElementById("circuitName").textContent = circuit.name;
+    document.getElementById("circuitLocation").textContent = circuit.location;
+    document.getElementById("circuitCountry").textContent = circuit.country;
+    document.getElementById("circuitURL").href = circuit.url; // Update the link
+
+    // Show the dialog
+    document.querySelector("#circuit").showModal();
   }
 
 

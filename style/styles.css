@@ -315,3 +315,22 @@ td {
   background-color: #470000;
 }
 /* ========================================= */
+/* Circuit popup styles */
+#circuitDetails {
+  display: flex; /* Use flexbox for layout */
+  align-items: center; /* Center items vertically */
+}
+
+.circuit-image {
+  width: 100%; /* Make the image responsive */
+  max-width: 400px; /* Set a maximum width */
+  height: auto; /* Maintain aspect ratio */
+  border-radius: 8px; /* Rounded corners for the image */
+  margin-right: 20px; /* Space to the right of the image */
+}
+
+#circuitDetails ul {
+  list-style-type: none; /* Remove default list styling */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}

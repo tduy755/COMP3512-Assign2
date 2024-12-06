@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     roundCell.textContent = race.round; // Round Number
     const yearCell = document.createElement("td");
     yearCell.textContent = race.year; // Year
-    
+
     const circuitNameCell = document.createElement("td");
     const circuitLink = document.createElement("a");
     circuitLink.textContent = race.circuit.name; // Circuit Name
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
     circuitLink.href = "#"; // Prevent default link behavior
     circuitLink.onclick = () => {
       // Open circuit dialog
-      document.querySelector("#circuit").showModal();
+      openCircuitDialog(race.circuit);
     };
     closeBtnCircuit.onclick = () => {
       document.querySelector("#circuit").close();
@@ -321,7 +321,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderQualifyingTable(data) {
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
+    const closeBtnConstructor = document.querySelector(
+      "#closeConstructorDialog"
+    );
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -498,7 +500,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderResultsTable(data) {
     const tbody = document.querySelector("#driverResults table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
+    const closeBtnConstructor = document.querySelector(
+      "#closeConstructorDialog"
+    );
     tbody.innerHTML = "";
 
     data.forEach((result) => {
@@ -541,17 +545,92 @@ document.addEventListener("DOMContentLoaded", () => {
       const points = document.createElement("td");
       points.textContent = result.points;
 
-
       row.appendChild(position);
       row.appendChild(driverName);
       row.appendChild(constructor);
       row.appendChild(laps);
       row.appendChild(points);
 
-
       tbody.appendChild(row);
-    })  ;
+    });
   }
+
+  function sortResultsTable(column) {
+    // Implement sorting logic here
+    const tbody = document.querySelector("#driverResults table tbody");
+    const originalData = JSON.parse(tbody.dataset.originalData);
+    const sortOrder = tbody.dataset.sortOrder === "asc" ? "desc" : "asc"; // Toggle sort order
+
+    const sortedData = originalData.slice().sort((a, b) => {
+      let valueA, valueB;
+
+      switch (column) {
+        case "position":
+          valueA = parseInt(a.position);
+          valueB = parseInt(b.position);
+          break;
+        case "name":
+          valueA = `${a.driver.forename} ${a.driver.surname}`;
+          valueB = `${b.driver.forename} ${b.driver.surname}`;
+          break;
+        case "constructor":
+          valueA = a.constructor.name;
+          valueB = b.constructor.name;
+          break;
+        case "laps":
+          valueA = a.laps;
+          valueB = b.laps;
+          break;
+        case "points":
+          valueA = parseInt(a.points);
+          valueB = parseInt(b.points);
+          break;
+        default:
+          return 0;
+      }
+
+      return sortOrder === "asc"
+        ? valueA < valueB
+          ? -1
+          : 1
+        : valueA > valueB
+        ? -1
+        : 1;
+    });
+
+    tbody.dataset.sortOrder = sortOrder; // Update the sort order
+
+    // Update the sort icons
+    updateResultsSortIcons(column, sortOrder);
+
+    renderResultsTable(sortedData);
+  }
+
+  function updateResultsSortIcons(column, sortOrder) {
+    const headers = document.querySelectorAll("#driverResults table th");
+    headers.forEach((header) => {
+      const icon = header.querySelector(".sort-icon");
+      if (header.dataset.column === column) {
+        icon.textContent = sortOrder === "asc" ? "↑" : "↓"; // Update icon based on sort order
+        icon.setAttribute("data-sort", sortOrder); // Update data-sort attribute
+      } else {
+        icon.textContent = "↑"; // Reset other icons to default
+        icon.setAttribute("data-sort", "asc");
+      }
+    });
+  }
+
+  function openCircuitDialog(circuit) {
+    // Populate circuit details here if needed
+    document.getElementById("circuitName").textContent = circuit.name;
+    document.getElementById("circuitLocation").textContent = circuit.location;
+    document.getElementById("circuitCountry").textContent = circuit.country;
+    document.getElementById("circuitURL").href = circuit.url; // Update the link
+
+    // Show the dialog
+    document.querySelector("#circuit").showModal();
+  }
+
   // Function to switch to browse view
   function switchToBrowseView() {
     const homeArticle = document.querySelector("#home");
@@ -562,21 +641,23 @@ document.addEventListener("DOMContentLoaded", () => {
   }
   // Function to open the circuit popup and populate it with the selected circuit's details
   function showCircuitDetails(circuitId) {
-    const circuit = circuits.find(circuit => circuit.id === circuitId);
-    
+    const circuit = circuits.find((circuit) => circuit.id === circuitId);
+
     if (circuit) {
-        // Populate dialog with circuit details using querySelector
-        document.querySelector("#circuitName").textContent = circuit.name;
-        document.querySelector("#circuitLocation").textContent = circuit.location;
-        document.querySelector("#circuitCountry").textContent = circuit.country;
-        document.querySelector("#circuitURL").href = circuit.url;
-        
-        // Open the dialog
-        document.querySelector("#circuit").showModal();
+      // Populate dialog with circuit details using querySelector
+      document.querySelector("#circuitName").textContent = circuit.name;
+      document.querySelector("#circuitLocation").textContent = circuit.location;
+      document.querySelector("#circuitCountry").textContent = circuit.country;
+      document.querySelector("#circuitURL").href = circuit.url;
+
+      // Open the dialog
+      document.querySelector("#circuit").showModal();
     }
   }
-  
-  document.querySelector("#closeCircuitDialog").addEventListener("click", function () {
-    document.querySelector("#circuit").close();
-  });
+
+  document
+    .querySelector("#closeCircuitDialog")
+    .addEventListener("click", function () {
+      document.querySelector("#circuit").close();
+    });
 });

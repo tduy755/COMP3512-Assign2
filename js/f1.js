@@ -226,9 +226,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const circuitCell = document.createElement("td");
       circuitCell.textContent = race.circuit.name; // Set the circuit name
 
-      // Fetch and display qualifying data for this specific race
-      const season = race.year; // Assuming `race.year` contains the season
-      const raceId = race.id; // Use the unique race ID to filter qualifying data
       // Create a button for results
       const resultCell = document.createElement("td"); // New cell for the result button
       const resultButton = document.createElement("button"); // Create button element
@@ -237,6 +234,9 @@ document.addEventListener("DOMContentLoaded", () => {
         resultsButtonClicked = true; // Set to true when the button is clicked
         displayRaceInfo(race); // Call the function to display results for the selected race
 
+        // Fetch and display qualifying data for this specific race
+        const season = race.year; // Assuming `race.year` contains the season
+        const raceId = race.id; // Use the unique race ID to filter qualifying data
         fetchQualifyingForRace(season, raceId);
         fetchResultsForRace(season, raceId);
       };
@@ -263,7 +263,7 @@ document.addEventListener("DOMContentLoaded", () => {
     roundCell.textContent = race.round; // Round Number
     const yearCell = document.createElement("td");
     yearCell.textContent = race.year; // Year
-
+    
     const circuitNameCell = document.createElement("td");
     const circuitLink = document.createElement("a");
     circuitLink.textContent = race.circuit.name; // Circuit Name
@@ -271,7 +271,7 @@ document.addEventListener("DOMContentLoaded", () => {
     circuitLink.href = "#"; // Prevent default link behavior
     circuitLink.onclick = () => {
       // Open circuit dialog
-      openCircuitDialog(race.circuit);
+      document.querySelector("#circuit").showModal();
     };
     closeBtnCircuit.onclick = () => {
       document.querySelector("#circuit").close();
@@ -321,9 +321,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderQualifyingTable(data) {
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector(
-      "#closeConstructorDialog"
-    );
+    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -500,9 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderResultsTable(data) {
     const tbody = document.querySelector("#driverResults table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector(
-      "#closeConstructorDialog"
-    );
+    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
     tbody.innerHTML = "";
 
     data.forEach((result) => {
@@ -545,57 +541,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const points = document.createElement("td");
       points.textContent = result.points;
 
+
       row.appendChild(position);
       row.appendChild(driverName);
       row.appendChild(constructor);
       row.appendChild(laps);
       row.appendChild(points);
 
+
       tbody.appendChild(row);
-    });
+    })  ;
   }
-
-  function populateCircuitDetails(season, raceId) {
-    // Retrieve the races data from localStorage
-    const storedData = localStorage.getItem(`races_${season}`);
-
-    if (storedData) {
-      const racesData = JSON.parse(storedData); // Parse the stored JSON data
-
-      // Find the race by ID
-      const race = racesData.find((r) => r.id === raceId);
-
-      if (race && race.circuit) {
-        // Populate the circuit details
-        document.getElementById("circuitName").textContent = race.circuit.name;
-        document.getElementById("circuitLocation").textContent =
-          race.circuit.location;
-        document.getElementById("circuitCountry").textContent =
-          race.circuit.country;
-        document.getElementById("circuitURL").href = race.circuit.url; // Update the link
-
-        // Show the dialog
-        document.querySelector("#circuit").showModal();
-      } else {
-        console.error("Circuit data not found for race ID:", raceId);
-      }
-    } else {
-      console.error("No races data found in localStorage for season:", season);
-    }
-  }
-
-  // Function to open the circuit dialog
-  function openCircuitDialog(circuit) {
-    // Populate circuit details here if needed
-    document.getElementById("circuitName").textContent = circuit.name;
-    document.getElementById("circuitLocation").textContent = circuit.location;
-    document.getElementById("circuitCountry").textContent = circuit.country;
-    document.getElementById("circuitURL").href = circuit.url; // Update the link
-
-    // Show the dialog
-    document.querySelector("#circuit").showModal();
-  }
-
   // Function to switch to browse view
   function switchToBrowseView() {
     const homeArticle = document.querySelector("#home");
@@ -604,4 +560,23 @@ document.addEventListener("DOMContentLoaded", () => {
     browseArticle.style.display = "block"; // Show the browse section
     console.log("Switched to browse view");
   }
+  // Function to open the circuit popup and populate it with the selected circuit's details
+  function showCircuitDetails(circuitId) {
+    const circuit = circuits.find(circuit => circuit.id === circuitId);
+    
+    if (circuit) {
+        // Populate dialog with circuit details using querySelector
+        document.querySelector("#circuitName").textContent = circuit.name;
+        document.querySelector("#circuitLocation").textContent = circuit.location;
+        document.querySelector("#circuitCountry").textContent = circuit.country;
+        document.querySelector("#circuitURL").href = circuit.url;
+        
+        // Open the dialog
+        document.querySelector("#circuit").showModal();
+    }
+  }
+  
+  document.querySelector("#closeCircuitDialog").addEventListener("click", function () {
+    document.querySelector("#circuit").close();
+  });
 });

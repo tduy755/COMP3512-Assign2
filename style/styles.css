@@ -232,6 +232,8 @@ td {
   background-color: #470000;
 }
 
+
+
 /* Dialog styles will be here */
 #closeDriverDialog {
   position: absolute; /* Position the button absolutely within the dialog */
@@ -282,12 +284,14 @@ td {
   overflow: auto; /* Add scrollbars if the content exceeds the dialog size */
 }
 
+
 /* ===results table styles== */
 #driverResults table {
   border: 1px solid #ccc; /* Add a border around the table */
   border-collapse: collapse; /* Collapse borders for a cleaner look */
   width: 100%; /* Ensure the table takes full width */
   margin-top: 20px; /* Space above the table */
+  
 }
 
 #driverResults table th,
@@ -310,22 +314,4 @@ td {
   cursor: pointer;
   background-color: #470000;
 }
-/* =====circuit popup styles============ */
-#circuitDetails {
-  display: flex; /* Use flexbox for layout */
-
-  margin: 20px; /* Add margin around the details */
-}
-
-.circuit-image {
-  width: 400px; /* Make the image responsive */
-  height: 400px; /* Maintain aspect ratio */
-  border-radius: 8px; /* Rounded corners for the image */
-  margin-bottom: 15px; /* Space below the image */
-  padding-right: 20px;
-}
-
-#circuitDetails ul {
-  list-style-type: none; /* Remove default list styling */
-  padding: 0; /* Remove default padding */
-}
+/* ========================================= */

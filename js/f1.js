@@ -352,12 +352,22 @@ document.addEventListener("DOMContentLoaded", () => {
       const constructorLink = document.createElement("a");
       constructorLink.textContent = q.constructor.name;
       constructorLink.href = "#"; // Prevent default link behavior
+      // constructorLink.onclick = () => {
+      //   // Open constructor dialog
+      //   console.log(constructor);  //fix somehow
+      //   openConstructorDialog(q.constructor); //data.?
+      // };
       constructorLink.onclick = () => {
-        // Open constructor dialog
-        console.log(constructor);
-        openConstructorDialog(data.constructor);
-      };
+        console.log("Constructor Data: ", q.constructor);
+        if (q.constructor) {
+            openConstructorDialog(q.constructor, data); // Pass `data` or the relevant qualifying dataset
+        } else {
+            alert("No constructor data available.");
+        }
+    };
+    
       closeBtnConstructor.onclick = () => {
+        console.log("Closing constructor dialog"); // Debugging line
         document.querySelector("#constructor").close();
       };
       constructor.appendChild(constructorLink); // Append link to the constructor cell
@@ -656,12 +666,51 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector("#circuit").showModal();
     }
   }
-  function openConstructorDialog(constructor) {
+  function openConstructorDialog(constructor, qualifyingData) {
+    console.log("Opening constructor dialog with data: ", constructor); // Debugging line
+
     // Populate constructor details
     document.querySelector("#constructorName").textContent = constructor.name;
     document.querySelector("#constructorNationality").textContent = constructor.nationality;
-    document.querySelector("#constructorURL").href = constructor.url; 
+    document.querySelector("#constructorURL").href = constructor.url;
 
+    // Filter qualifying data for the constructor
+    const constructorQualifyingResults = qualifyingData.filter(result => result.constructor.id === constructor.id);
+
+    const raceResultsList = document.querySelector("#raceResultsList");
+    raceResultsList.innerHTML = ""; // Clear previous content
+
+    // Add filtered qualifying results (race data) to the table
+    constructorQualifyingResults.forEach(result => {
+        const row = document.createElement("tr");
+
+        // Get the driver name, race name, and position
+        const driverName = `${result.driver.forename} ${result.driver.surname}`;
+        const raceName = result.race.name;
+        const position = result.position;
+
+        // Create table cells for each race result
+        const roundCell = document.createElement("td");
+        roundCell.textContent = result.race.round;
+
+        const raceNameCell = document.createElement("td");
+        raceNameCell.textContent = raceName;
+
+        const driverCell = document.createElement("td");
+        driverCell.textContent = driverName;
+
+        const positionCell = document.createElement("td");
+        positionCell.textContent = position;
+
+        // Append cells to the row
+        row.appendChild(roundCell);
+        row.appendChild(raceNameCell);
+        row.appendChild(driverCell);
+        row.appendChild(positionCell);
+
+        // Append the row to the table body
+        raceResultsList.appendChild(row);
+    });
     // Show the dialog
     document.querySelector("#constructor").showModal();
 }

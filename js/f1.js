@@ -319,6 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderQualifyingTable(data) {
+    console.log("qualifyingData", data);
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
     const closeBtnConstructor = document.querySelector(
@@ -353,7 +354,8 @@ document.addEventListener("DOMContentLoaded", () => {
       constructorLink.href = "#"; // Prevent default link behavior
       constructorLink.onclick = () => {
         // Open constructor dialog
-        document.querySelector("#constructor").showModal();
+        console.log(constructor);
+        openConstructorDialog(data.constructor);
       };
       closeBtnConstructor.onclick = () => {
         document.querySelector("#constructor").close();
@@ -654,10 +656,26 @@ document.addEventListener("DOMContentLoaded", () => {
       document.querySelector("#circuit").showModal();
     }
   }
+  function openConstructorDialog(constructor) {
+    // Populate constructor details
+    document.querySelector("#constructorName").textContent = constructor.name;
+    document.querySelector("#constructorNationality").textContent = constructor.nationality;
+    document.querySelector("#constructorURL").href = constructor.url; 
 
-  document
-    .querySelector("#closeCircuitDialog")
-    .addEventListener("click", function () {
-      document.querySelector("#circuit").close();
-    });
+    // Show the dialog
+    document.querySelector("#constructor").showModal();
+}
+function showConstructorDetails(constructorId){
+  const constructor = constructors.find((constructor) => constructor.id === constructorId);
+
+  if(constructor){
+    document.querySelector("#constructorName").textContent = constructor.name;
+      document.querySelector("#constructorNationality").textContent = constructor.location;
+      document.querySelector("#constructorURL").href = constructor.url;
+
+      // Open the dialog
+      document.querySelector("#constructor").showModal();
+  }
+
+}
 });

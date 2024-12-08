@@ -322,9 +322,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("qualifyingData", data);
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector(
-      "#closeConstructorDialog"
-    );
+    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -365,6 +363,15 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("No constructor data available.");
         }
     };
+    driverLink.onclick = () => {
+      console.log("Driver Data: ", q.driver);
+      if (q.driver) {
+          openDriverDialog(q.driver, data); // Pass the driver and race data
+      } else {
+          alert("No driver data available.");
+      }
+  };
+  
     
       closeBtnConstructor.onclick = () => {
         console.log("Closing constructor dialog"); // Debugging line
@@ -727,4 +734,76 @@ function showConstructorDetails(constructorId){
   }
 
 }
+function showDriverDialog(driverId){
+  const driver = driver.find((driver) => driver.id === driverID);
+
+  if(driver){
+  document.querySelector("#driverName").textContent = `${driver.forename} ${driver.surname}`;
+  document.querySelector("#driverDOB").textContent = driver.dateOfBirth;
+  document.querySelector("#driverAge").textContent = calculateAge(driver.dateOfBirth);
+  document.querySelector("#driverNationality").textContent = driver.nationality;
+  document.querySelector("#driverURL").href = driver.url;
+
+  }
+}
+function openDriverDialog(driver, raceData) {
+  console.log("Opening driver dialog with data: ", driver);
+
+  // Populate driver details
+  document.querySelector("#driverName").textContent = `${driver.forename} ${driver.surname}`;
+  document.querySelector("#driverDOB").textContent = driver.dateOfBirth;
+  document.querySelector("#driverAge").textContent = calculateAge(driver.dateOfBirth);
+  document.querySelector("#driverNationality").textContent = driver.nationality;
+  document.querySelector("#driverURL").href = driver.url;
+
+  // Filter race results for the driver in the selected season
+  const driverRaceResults = raceData.filter(result => result.driver.id === driver.id);
+
+  const driverResultsList = document.querySelector("#driverResultsList");
+  driverResultsList.innerHTML = ""; // Clear previous content
+
+  // Add filtered race results to the table
+  driverRaceResults.forEach(result => {
+      const row = document.createElement("tr");
+
+      // Create table cells for round, race name, position, and points
+      const roundCell = document.createElement("td");
+      roundCell.textContent = result.race.round;
+
+      const raceNameCell = document.createElement("td");
+      raceNameCell.textContent = result.race.name;
+
+      const positionCell = document.createElement("td");
+      positionCell.textContent = result.position;
+
+      const pointsCell = document.createElement("td");
+      pointsCell.textContent = result.points;
+
+      // Append cells to the row
+      row.appendChild(roundCell);
+      row.appendChild(raceNameCell);
+      row.appendChild(positionCell);
+      row.appendChild(pointsCell);
+
+      // Append the row to the table body
+      driverResultsList.appendChild(row);
+  });
+
+  // Show the dialog
+  document.querySelector("#driver").showModal();
+}
+
+// Helper function to calculate age from DOB
+function calculateAge(dob) {
+  const birthDate = new Date(dob);
+  const today = new Date();
+  let age = today.getFullYear() - birthDate.getFullYear();
+  const monthDiff = today.getMonth() - birthDate.getMonth();
+
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+  }
+  return age;
+}
+
 });

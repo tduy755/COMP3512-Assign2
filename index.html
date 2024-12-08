@@ -180,6 +180,30 @@
         <h3>Driver Information</h3>
         <div id="driverDetails">
             <!-- Driver details will be populated here -->
+            <img src="images/Charles_Leclerc_2022.jpg" alt="Driver Image" class="driver-image">
+            <ul>
+                <li><strong>Name:</strong> <span id="driverName"></span></li>
+                <li><strong>Date of Birth:</strong> <span id="driverDOB"></span></li>
+                <li><strong>Age:</strong> <span id="driverAge"></span></li>
+                <li><strong>Nationality:</strong> <span id="driverNationality"></span></li>
+                <li><strong>More Info:</strong> <a href="#" id="driverURL" target="_blank">Click here</a></li>
+            </ul>
+        </div>
+    
+        <!-- Section for displaying race results in a table -->
+        <div id="driverResults">
+            <h4>Race Results:</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Round</th>
+                        <th>Race Name</th>
+                        <th>Position</th>
+                        <th>Points</th>
+                    </tr>
+                </thead>
+                <tbody id="driverResultsList"></tbody>
+            </table>
         </div>
         <button id="closeDriverDialog">Close</button>
     </dialog>

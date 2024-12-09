@@ -232,38 +232,40 @@ td {
   background-color: #470000;
 }
 
+/* Close button at the top-right */
+.close-top-right {
+  position: absolute; 
+  top: 10px; 
+  right: 10px; 
+  background-color: transparent; 
+  color: #007bff; 
+  border: none; 
+  font-size: 1.2rem; 
+  cursor: pointer; 
+}
 
+.close-top-right:hover {
+  color: #0056b3; /* Darken color on hover */
+}
 
 /* Dialog styles will be here */
-#closeDriverDialog {
-  position: absolute; /* Position the button absolutely within the dialog */
-  bottom: 10px; /* Distance from the bottom */
-  right: 10px; /* Distance from the right */
-  padding: 10px 20px; /* Add padding to the button */
-  border: none; /* Remove border */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Change cursor to pointer */
+#closeConstructorDialog #closeDriverDialog #closeCircuitDialog {
+  align-self: center; 
+  margin-top: auto; 
+  padding: 10px 20px; 
+  background-color: #007bff; 
+  color: white; 
+  border: none; 
+  border-radius: 4px; 
+  cursor: pointer; 
 }
-
-#closeConstructorDialog {
-  position: absolute; /* Position the button absolutely within the dialog */
-  bottom: 10px; /* Distance from the bottom */
-  right: 10px; /* Distance from the right */
-  padding: 10px 20px; /* Add padding to the button */
-
-  border: none; /* Remove border */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Change cursor to pointer */
-}
-
-#closeCircuitDialog {
-  position: absolute; /* Position the button absolutely within the dialog */
-  bottom: 10px; /* Distance from the bottom */
-  right: 10px; /* Distance from the right */
-  padding: 10px 20px; /* Add padding to the button */
-  border: none; /* Remove border */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Change cursor to pointer */
+#driverResults table {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  width: 100%;
+  margin-top: 20px;
+  overflow-y: auto;
+  max-height: 500px;
 }
 
 #driver {
@@ -313,6 +315,38 @@ td {
 #driverResults th:hover {
   cursor: pointer;
   background-color: #470000;
+}
+dialog table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+dialog table thead {
+  background-color: #f8f9fa;
+  position: sticky; /* Keeps the header visible during scroll */
+  top: 0;
+  z-index: 1;
+}
+
+dialog table tbody {
+  display: block;
+  max-height: 300px; /* Adjust height for modal design */
+  overflow-y: auto;
+  width: 100%;
+}
+
+dialog table thead, dialog table tbody tr {
+  display: table; /* Ensures rows align properly */
+  width: 100%;
+  table-layout: fixed; /* Consistent column width */
+}
+
+/* Optional: Padding and border styles for table cells */
+dialog table th, dialog table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 /* ========================================= */
 /* Circuit popup styles */

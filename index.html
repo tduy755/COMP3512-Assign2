@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="js/f1.js"></script>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
     <link rel="stylesheet" href="style/styles.css">
     </style>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap">
@@ -178,6 +179,8 @@
     <!-- display driver popup when user click on driver link -->
     <dialog id="driver">
         <h3>Driver Information</h3>
+        <button class="close-top-right" id="closeDriverTopRight"><i class="fa fa-times"></i></button>
+
         <div id="driverDetails">
             <!-- Driver details will be populated here -->
             <img src="images/Charles_Leclerc_2022.jpg" alt="Driver Image" class="driver-image">
@@ -209,6 +212,8 @@
     </dialog>
     <!-- display circuit popup when user click on circuit link -->
     <dialog id="circuit">
+        <button class="close-top-right" id="closeCircuitTopRight"><i class="fa fa-times"></i></button>
+
         <h3>Circuit Information</h3>
         <div id="circuitDetails">
             <!-- Circuit details will be populated here -->
@@ -225,6 +230,7 @@
     <!-- display constructor popup when user click on constructor link -->
 
     <dialog id="constructor">
+        <button class="close-top-right" id="closeConstructorTopRight"><i class="fa fa-times"></i></button>
         <h3>Constructor Information</h3>
         <div id="constructorDetails">
             <img src="images/Charles_Leclerc_2022.jpg" alt="Circuit Image" class="circuit-image">

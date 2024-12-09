@@ -273,9 +273,19 @@ document.addEventListener("DOMContentLoaded", () => {
       // Open circuit dialog
       openCircuitDialog(race.circuit);
     };
-    closeBtnCircuit.onclick = () => {
-      document.querySelector("#circuit").close();
-    };
+    document.querySelector("#closeCircuitTopRight").addEventListener("click", function() {
+      const circuitModal = document.querySelector("#circuit");
+      if (circuitModal.open) {
+        circuitModal.close();
+      }
+    });
+    document.querySelector("#closeCircuitDialog").addEventListener("click", function() {
+      const circuitModal = document.querySelector("#circuit");
+      if (circuitModal.open) {
+        circuitModal.close();
+      }
+    });
+  
     circuitNameCell.appendChild(circuitLink); // Append link to the circuit cell
 
     const dateCell = document.createElement("td");
@@ -344,9 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Open driver dialog
         openDriverDialog(q.driver.id, season); // Pass the driver and race data
       };
-      closeBtnDriver.onclick = () => {
-        document.querySelector("#driver").close();
-      };
+      
       driverName.appendChild(driverLink); // Append link to the driver cell
 
       // Create hyperlink for constructor
@@ -363,10 +371,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       };
 
-      closeBtnConstructor.onclick = () => {
-        console.log("Closing constructor dialog"); // Debugging line
-        document.querySelector("#constructor").close();
-      };
+      document.querySelector("#closeConstructorTopRight").addEventListener("click", function() {
+        const constructorModal = document.querySelector("#constructor");
+        if (constructorModal.open) {
+          constructorModal.close();
+        }
+      });
+      document.querySelector("#closeConstructorDialog").addEventListener("click", function() {
+        const constructorModal = document.querySelector("#constructor");
+        if (constructorModal.open) {
+          constructorModal.close();
+        }
+      });
       constructor.appendChild(constructorLink); // Append link to the constructor cell
 
       const q1 = document.createElement("td");
@@ -536,9 +552,18 @@ document.addEventListener("DOMContentLoaded", () => {
       driverLink.onclick = () => {
         openDriverDialog(result.driver.id, season);
       };
-      closeBtnDriver.onclick = () => {
-        document.querySelector("#driver").close();
-      };
+      document.querySelector("#closeDriverTopRight").addEventListener("click", function() {
+        const driverModal = document.querySelector("#driver");
+        if (driverModal.open) {
+          driverModal.close();
+        }
+      });
+      document.querySelector("#closeDriverDialog").addEventListener("click", function() {
+        const driverModal = document.querySelector("#driver");
+        if (driverModal.open) {
+          driverModal.close();
+        }
+      });
       driverName.appendChild(driverLink); // Append link to the driver cell
 
       // Create hyperlink for constructor
@@ -550,9 +575,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Open constructor dialog
         openConstructorDialog(result.constructor, season); // Pass constructor and season
       };
-      closeBtnConstructor.onclick = () => {
-        document.querySelector("#constructor").close();
-      };
+      
       constructor.appendChild(constructorLink); // Append link to the constructor cell
 
       const laps = document.createElement("td");

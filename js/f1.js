@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
       driverLink.href = "#"; // Prevent default link behavior
       driverLink.onclick = () => {
         // Open driver dialog
-        openDriverDialog(q.driver, data); // Pass the driver and race data
+        openDriverDialog(q.driver.id, season); // Pass the driver and race data
       };
       closeBtnDriver.onclick = () => {
         document.querySelector("#driver").close();
@@ -534,8 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
       driverLink.textContent = `${result.driver.forename} ${result.driver.surname}`;
       driverLink.href = "#"; // Prevent default link behavior
       driverLink.onclick = () => {
-        // Open driver dialog
-        document.querySelector("#driver").showModal();
+        openDriverDialog(result.driver.id, season);
       };
       closeBtnDriver.onclick = () => {
         document.querySelector("#driver").close();
@@ -737,60 +736,82 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelector("#constructor").showModal();
   }
 
-  function openDriverDialog(driver, raceData) {
-    console.log("Opening driver dialog with data: ", driver);
+  function openDriverDialog(driverId, season) {
+    // Define the URL for fetching driver data
+    const driverUrl = `https://www.randyconnolly.com/funwebdev/3rd/api/f1/drivers.php?id=${driverId}`;
 
-    // Populate driver details
-    document.querySelector(
-      "#driverName"
-    ).textContent = `${driver.forename} ${driver.surname}`;
-    document.querySelector("#driverDOB").textContent = driver.dateOfBirth;
-    document.querySelector("#driverAge").textContent = calculateAge(
-      driver.dateOfBirth
-    );
-    document.querySelector("#driverNationality").textContent =
-      driver.nationality;
-    document.querySelector("#driverURL").href = driver.url;
+    // Use Promise to fetch driver data
+    fetch(driverUrl)
+      .then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json(); // Parse the JSON from the response
+      })
+      .then((driverData) => {
+        // Populate driver details
+        document.querySelector(
+          "#driverName"
+        ).textContent = `${driverData.forename} ${driverData.surname}`;
+        document.querySelector("#driverDOB").textContent = driverData.dob;
+        document.querySelector("#driverAge").textContent = calculateAge(
+          driverData.dob
+        );
+        document.querySelector("#driverNationality").textContent =
+          driverData.nationality;
+        document.querySelector("#driverURL").href = driverData.url;
 
-    // Filter race results for the driver in the selected season
-    const driverRaceResults = raceData.filter(
-      (result) => result.driver.id === driver.id
-    );
+        // Clear previous content and add fetched results to the table
+        const driverResultsList = document.querySelector("#driverResultsList");
+        driverResultsList.innerHTML = ""; // Clear previous content
 
-    const driverResultsList = document.querySelector("#driverResultsList");
-    driverResultsList.innerHTML = ""; // Clear previous content
+        // Retrieve results data from localStorage
+        const storedResults = localStorage.getItem(`results_${season}`);
+        if (storedResults) {
+          const resultsData = JSON.parse(storedResults);
 
-    // Add filtered race results to the table
-    driverRaceResults.forEach((result) => {
-      const row = document.createElement("tr");
+          // Find the driver's results
+          const driverResults = resultsData.filter(
+            (result) => result.driver.id === driverId
+          );
+          console.log("Driver Results: ", driverResults);
+          // Populate the results table
+          driverResults.forEach((result) => {
+            const row = document.createElement("tr");
 
-      // Create table cells for round, race name, position, and points
-      const roundCell = document.createElement("td");
-      roundCell.textContent = result.race.round;
+            // Create table cells for round, race name, position, and points
+            const roundCell = document.createElement("td");
+            roundCell.textContent = result.race.round; // Display the round number
 
-      const raceNameCell = document.createElement("td");
-      raceNameCell.textContent = result.race.name;
+            const raceNameCell = document.createElement("td");
+            raceNameCell.textContent = result.race.name; // Display the race name
 
-      const positionCell = document.createElement("td");
-      positionCell.textContent = result.position;
+            const positionCell = document.createElement("td");
+            positionCell.textContent = result.position; // Display the position
 
-      const pointsCell = document.createElement("td");
-      pointsCell.textContent = result.points;
+            const pointsCell = document.createElement("td");
+            pointsCell.textContent = result.points; // Display the points for that round
 
-      // Append cells to the row
-      row.appendChild(roundCell);
-      row.appendChild(raceNameCell);
-      row.appendChild(positionCell);
-      row.appendChild(pointsCell);
+            // Append cells to the row
+            row.appendChild(roundCell);
+            row.appendChild(raceNameCell);
+            row.appendChild(positionCell);
+            row.appendChild(pointsCell);
 
-      // Append the row to the table body
-      driverResultsList.appendChild(row);
-    });
+            // Append the row to the table body
+            driverResultsList.appendChild(row);
+          });
+        } else {
+          console.warn(
+            "No results data found in localStorage for the selected season."
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
 
     // Show the dialog
     document.querySelector("#driver").showModal();
   }
-
   // Helper function to calculate age from DOB
   function calculateAge(dob) {
     const birthDate = new Date(dob);

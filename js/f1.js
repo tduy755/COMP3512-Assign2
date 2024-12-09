@@ -131,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
           if (qualifyingForRace.length === 0) {
             console.warn("No qualifying data found for race ID:", raceId);
           } else {
-            displayQualifyingTable(qualifyingForRace); // Display the filtered data
+            displayQualifyingTable(qualifyingForRace, season); // Pass season as a parameter
           }
         })
         .catch((error) => {
@@ -149,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
         (qualifying) => qualifying.race.id === raceId
       );
 
-      displayQualifyingTable(qualifyingForRace); // Display cached data
+      displayQualifyingTable(qualifyingForRace, season); // Pass season as a parameter
     }
   }
 
@@ -171,7 +171,7 @@ document.addEventListener("DOMContentLoaded", () => {
         })
         .then((data) => {
           localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
-          displayResultsTable(data); // Call the function to display the results table
+          displayResultsTable(data, season); // Call the function to display the results table with season
         })
         .then((data) => {
           if (!data || data.length === 0) {
@@ -180,7 +180,7 @@ document.addEventListener("DOMContentLoaded", () => {
           }
           localStorage.setItem(`results_${season}`, JSON.stringify(data)); // Store the fetched data in localStorage
           displayTop3Results(data); // Call the function to display the top 3 results
-          displayResultsTable(data); // Call the function to display the results table
+          displayResultsTable(data, season); // Call the function to display the results table with season
         })
         .catch((error) => {
           console.error("There was a problem with the fetch operation:", error);
@@ -192,7 +192,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = JSON.parse(storedData);
       const resultsForRace = data.filter((result) => result.race.id === raceId);
       displayTop3Results(resultsForRace); // Display cached data
-      displayResultsTable(resultsForRace); // Display cached data
+      displayResultsTable(resultsForRace, season); // Display cached data with season
     }
   }
 
@@ -298,7 +298,8 @@ document.addEventListener("DOMContentLoaded", () => {
     raceInfoTable.appendChild(raceRow);
   }
 
-  function displayQualifyingTable(qualifying) {
+  function displayQualifyingTable(qualifying, season) {
+    // Add season as a parameter
     const table = document.querySelector("#qualifying table");
     const thead = table.querySelector("thead");
     const tbody = table.querySelector("tbody");
@@ -314,15 +315,18 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Render the initial table
-    renderQualifyingTable(qualifying);
+    // Render the initial table with qualifying data and selected season
+    renderQualifyingTable(qualifying, season); // Pass the fetched data and season
   }
 
-  function renderQualifyingTable(data) {
+  function renderQualifyingTable(data, season) {
+    // Ensure season is passed
     console.log("qualifyingData", data);
     const tbody = document.querySelector("#qualifying table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
-    const closeBtnConstructor = document.querySelector("#closeConstructorDialog");
+    const closeBtnConstructor = document.querySelector(
+      "#closeConstructorDialog"
+    );
     tbody.innerHTML = "";
 
     data.forEach((q) => {
@@ -338,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
       driverLink.href = "#"; // Prevent default link behavior
       driverLink.onclick = () => {
         // Open driver dialog
-        document.querySelector("#driver").showModal();
+        openDriverDialog(q.driver, data); // Pass the driver and race data
       };
       closeBtnDriver.onclick = () => {
         document.querySelector("#driver").close();
@@ -350,29 +354,15 @@ document.addEventListener("DOMContentLoaded", () => {
       const constructorLink = document.createElement("a");
       constructorLink.textContent = q.constructor.name;
       constructorLink.href = "#"; // Prevent default link behavior
-      // constructorLink.onclick = () => {
-      //   // Open constructor dialog
-      //   console.log(constructor);  //fix somehow
-      //   openConstructorDialog(q.constructor); //data.?
-      // };
       constructorLink.onclick = () => {
         console.log("Constructor Data: ", q.constructor);
         if (q.constructor) {
-            openConstructorDialog(q.constructor, data); // Pass `data` or the relevant qualifying dataset
+          openConstructorDialog(q.constructor, season); // Pass `data` and `season`
         } else {
-            alert("No constructor data available.");
+          alert("No constructor data available.");
         }
-    };
-    driverLink.onclick = () => {
-      console.log("Driver Data: ", q.driver);
-      if (q.driver) {
-          openDriverDialog(q.driver, data); // Pass the driver and race data
-      } else {
-          alert("No driver data available.");
-      }
-  };
-  
-    
+      };
+
       closeBtnConstructor.onclick = () => {
         console.log("Closing constructor dialog"); // Debugging line
         document.querySelector("#constructor").close();
@@ -388,13 +378,20 @@ document.addEventListener("DOMContentLoaded", () => {
       const q3 = document.createElement("td");
       q3.textContent = q.q3;
 
+      // Create hyperlink for race URL
+      const urlLink = document.createElement("a");
+
+      urlLink.onclick = (event) => {
+        event.preventDefault(); // Prevent default link behavior
+        fetchQualifyingForRace(season, q.race.id); // Call the function with season and raceId
+      };
+
       row.appendChild(position);
       row.appendChild(driverName);
       row.appendChild(constructor);
       row.appendChild(q1);
       row.appendChild(q2);
       row.appendChild(q3);
-
       tbody.appendChild(row);
     });
   }
@@ -496,7 +493,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function displayResultsTable(results) {
+  function displayResultsTable(results, season) {
     const table = document.querySelector("#driverResults table");
     const thead = table.querySelector("thead");
     const tbody = table.querySelector("tbody");
@@ -512,11 +509,12 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
 
-    // Render the initial table
-    renderResultsTable(results);
+    // Render the initial table with the season parameter
+    renderResultsTable(results, season); // Pass the season parameter
   }
 
-  function renderResultsTable(data) {
+  function renderResultsTable(data, season) {
+    // Add season as a parameter
     const tbody = document.querySelector("#driverResults table tbody");
     const closeBtnDriver = document.querySelector("#closeDriverDialog");
     const closeBtnConstructor = document.querySelector(
@@ -551,7 +549,7 @@ document.addEventListener("DOMContentLoaded", () => {
       constructorLink.href = "#"; // Prevent default link behavior
       constructorLink.onclick = () => {
         // Open constructor dialog
-        document.querySelector("#constructor").showModal();
+        openConstructorDialog(result.constructor, season); // Pass constructor and season
       };
       closeBtnConstructor.onclick = () => {
         document.querySelector("#constructor").close();
@@ -629,12 +627,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const headers = document.querySelectorAll("#driverResults table th");
     headers.forEach((header) => {
       const icon = header.querySelector(".sort-icon");
-      if (header.dataset.column === column) {
-        icon.textContent = sortOrder === "asc" ? "↑" : "↓"; // Update icon based on sort order
-        icon.setAttribute("data-sort", sortOrder); // Update data-sort attribute
-      } else {
-        icon.textContent = "↑"; // Reset other icons to default
-        icon.setAttribute("data-sort", "asc");
+      if (icon) {
+        // Check if the icon exists
+        if (header.dataset.column === column) {
+          icon.textContent = sortOrder === "asc" ? "↑" : "↓"; // Update icon based on sort order
+          icon.setAttribute("data-sort", sortOrder); // Update data-sort attribute
+        } else {
+          icon.textContent = "↑"; // Reset other icons to default
+          icon.setAttribute("data-sort", "asc");
+        }
       }
     });
   }
@@ -658,112 +659,109 @@ document.addEventListener("DOMContentLoaded", () => {
     browseArticle.style.display = "block"; // Show the browse section
     console.log("Switched to browse view");
   }
-  // Function to open the circuit popup and populate it with the selected circuit's details
-  function showCircuitDetails(circuitId) {
-    const circuit = circuits.find((circuit) => circuit.id === circuitId);
 
-    if (circuit) {
-      // Populate dialog with circuit details using querySelector
-      document.querySelector("#circuitName").textContent = circuit.name;
-      document.querySelector("#circuitLocation").textContent = circuit.location;
-      document.querySelector("#circuitCountry").textContent = circuit.country;
-      document.querySelector("#circuitURL").href = circuit.url;
-
-      // Open the dialog
-      document.querySelector("#circuit").showModal();
-    }
-  }
-  function openConstructorDialog(constructor, qualifyingData) {
+  function openConstructorDialog(constructor, season) {
     console.log("Opening constructor dialog with data: ", constructor); // Debugging line
 
     // Populate constructor details
     document.querySelector("#constructorName").textContent = constructor.name;
-    document.querySelector("#constructorNationality").textContent = constructor.nationality;
-    document.querySelector("#constructorURL").href = constructor.url;
+    document.querySelector("#constructorNationality").textContent =
+      constructor.nationality;
 
-    // Filter qualifying data for the constructor
-    const constructorQualifyingResults = qualifyingData.filter(result => result.constructor.id === constructor.id);
+    // Define the URLs for fetching data
+    const constructorUrl = `https://www.randyconnolly.com/funwebdev/3rd/api/f1/constructors.php`;
+    const resultsUrl = `https://www.randyconnolly.com/funwebdev/3rd/api/f1/constructorResults.php?constructor=${constructor.ref.toLowerCase()}&season=${season}`;
 
-    const raceResultsList = document.querySelector("#raceResultsList");
-    raceResultsList.innerHTML = ""; // Clear previous content
+    // Use Promise.all to fetch both APIs
+    Promise.all([
+      fetch(constructorUrl).then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json(); // Parse the JSON from the response
+      }),
+      fetch(resultsUrl).then((response) => {
+        if (!response.ok) throw new Error("Network response was not ok");
+        return response.json(); // Parse the JSON from the response
+      }),
+    ])
+      .then(([constructorData, raceResultsData]) => {
+        // Find the constructor URL based on the constructor reference
+        const foundConstructor = constructorData.find(
+          (c) => c.constructorRef === constructor.ref.toLowerCase()
+        );
+        if (foundConstructor) {
+          document.querySelector("#constructorURL").href = foundConstructor.url; // Update the URL
+        } else {
+          console.error("Constructor not found in the API data.");
+        }
 
-    // Add filtered qualifying results (race data) to the table
-    constructorQualifyingResults.forEach(result => {
-        const row = document.createElement("tr");
+        // Clear previous content and add fetched results to the table
+        const raceResultsList = document.querySelector("#raceResultsList");
+        raceResultsList.innerHTML = ""; // Clear previous content
 
-        // Get the driver name, race name, and position
-        const driverName = `${result.driver.forename} ${result.driver.surname}`;
-        const raceName = result.race.name;
-        const position = result.position;
+        raceResultsData.forEach((result) => {
+          const row = document.createElement("tr");
 
-        // Create table cells for each race result
-        const roundCell = document.createElement("td");
-        roundCell.textContent = result.race.round;
+          // Get the driver name, race name, and position
+          const driverName = `${result.forename} ${result.surname}`;
+          const raceName = result.name;
+          const position = result.positionOrder;
 
-        const raceNameCell = document.createElement("td");
-        raceNameCell.textContent = raceName;
+          // Create table cells for each race result
+          const roundCell = document.createElement("td");
+          roundCell.textContent = result.round;
 
-        const driverCell = document.createElement("td");
-        driverCell.textContent = driverName;
+          const raceNameCell = document.createElement("td");
+          raceNameCell.textContent = raceName;
 
-        const positionCell = document.createElement("td");
-        positionCell.textContent = position;
+          const driverCell = document.createElement("td");
+          driverCell.textContent = driverName;
 
-        // Append cells to the row
-        row.appendChild(roundCell);
-        row.appendChild(raceNameCell);
-        row.appendChild(driverCell);
-        row.appendChild(positionCell);
+          const positionCell = document.createElement("td");
+          positionCell.textContent = position;
 
-        // Append the row to the table body
-        raceResultsList.appendChild(row);
-    });
+          // Append cells to the row
+          row.appendChild(roundCell);
+          row.appendChild(raceNameCell);
+          row.appendChild(driverCell);
+          row.appendChild(positionCell);
+
+          // Append the row to the table body
+          raceResultsList.appendChild(row);
+        });
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+
     // Show the dialog
     document.querySelector("#constructor").showModal();
-}
-function showConstructorDetails(constructorId){
-  const constructor = constructors.find((constructor) => constructor.id === constructorId);
-
-  if(constructor){
-    document.querySelector("#constructorName").textContent = constructor.name;
-      document.querySelector("#constructorNationality").textContent = constructor.location;
-      document.querySelector("#constructorURL").href = constructor.url;
-
-      // Open the dialog
-      document.querySelector("#constructor").showModal();
   }
 
-}
-function showDriverDialog(driverId){
-  const driver = driver.find((driver) => driver.id === driverID);
+  function openDriverDialog(driver, raceData) {
+    console.log("Opening driver dialog with data: ", driver);
 
-  if(driver){
-  document.querySelector("#driverName").textContent = `${driver.forename} ${driver.surname}`;
-  document.querySelector("#driverDOB").textContent = driver.dateOfBirth;
-  document.querySelector("#driverAge").textContent = calculateAge(driver.dateOfBirth);
-  document.querySelector("#driverNationality").textContent = driver.nationality;
-  document.querySelector("#driverURL").href = driver.url;
+    // Populate driver details
+    document.querySelector(
+      "#driverName"
+    ).textContent = `${driver.forename} ${driver.surname}`;
+    document.querySelector("#driverDOB").textContent = driver.dateOfBirth;
+    document.querySelector("#driverAge").textContent = calculateAge(
+      driver.dateOfBirth
+    );
+    document.querySelector("#driverNationality").textContent =
+      driver.nationality;
+    document.querySelector("#driverURL").href = driver.url;
 
-  }
-}
-function openDriverDialog(driver, raceData) {
-  console.log("Opening driver dialog with data: ", driver);
+    // Filter race results for the driver in the selected season
+    const driverRaceResults = raceData.filter(
+      (result) => result.driver.id === driver.id
+    );
 
-  // Populate driver details
-  document.querySelector("#driverName").textContent = `${driver.forename} ${driver.surname}`;
-  document.querySelector("#driverDOB").textContent = driver.dateOfBirth;
-  document.querySelector("#driverAge").textContent = calculateAge(driver.dateOfBirth);
-  document.querySelector("#driverNationality").textContent = driver.nationality;
-  document.querySelector("#driverURL").href = driver.url;
+    const driverResultsList = document.querySelector("#driverResultsList");
+    driverResultsList.innerHTML = ""; // Clear previous content
 
-  // Filter race results for the driver in the selected season
-  const driverRaceResults = raceData.filter(result => result.driver.id === driver.id);
-
-  const driverResultsList = document.querySelector("#driverResultsList");
-  driverResultsList.innerHTML = ""; // Clear previous content
-
-  // Add filtered race results to the table
-  driverRaceResults.forEach(result => {
+    // Add filtered race results to the table
+    driverRaceResults.forEach((result) => {
       const row = document.createElement("tr");
 
       // Create table cells for round, race name, position, and points
@@ -787,23 +785,25 @@ function openDriverDialog(driver, raceData) {
 
       // Append the row to the table body
       driverResultsList.appendChild(row);
-  });
+    });
 
-  // Show the dialog
-  document.querySelector("#driver").showModal();
-}
-
-// Helper function to calculate age from DOB
-function calculateAge(dob) {
-  const birthDate = new Date(dob);
-  const today = new Date();
-  let age = today.getFullYear() - birthDate.getFullYear();
-  const monthDiff = today.getMonth() - birthDate.getMonth();
-
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-      age--;
+    // Show the dialog
+    document.querySelector("#driver").showModal();
   }
-  return age;
-}
 
+  // Helper function to calculate age from DOB
+  function calculateAge(dob) {
+    const birthDate = new Date(dob);
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  }
 });

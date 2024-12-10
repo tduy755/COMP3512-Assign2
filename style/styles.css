@@ -234,14 +234,14 @@ td {
 
 /* Close button at the top-right */
 .close-top-right {
-  position: absolute; 
-  top: 10px; 
-  right: 10px; 
-  background-color: transparent; 
-  color: #007bff; 
-  border: none; 
-  font-size: 1.2rem; 
-  cursor: pointer; 
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: transparent;
+  color: #007bff;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 
 .close-top-right:hover {
@@ -250,14 +250,14 @@ td {
 
 /* Dialog styles will be here */
 #closeConstructorDialog #closeDriverDialog #closeCircuitDialog {
-  align-self: center; 
-  margin-top: auto; 
-  padding: 10px 20px; 
-  background-color: #007bff; 
-  color: white; 
-  border: none; 
-  border-radius: 4px; 
-  cursor: pointer; 
+  align-self: center;
+  margin-top: auto;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 #driverResults table {
   border: 1px solid #ccc;
@@ -266,6 +266,17 @@ td {
   margin-top: 20px;
   overflow-y: auto;
   max-height: 500px;
+}
+
+#raceResultsTable th {
+  background-color: #a72828;
+  color: white;
+  border: 1px solid #ccc; /* Added border for table headers */
+}
+
+#raceResultsTable th:hover {
+  cursor: pointer;
+  background-color: #470000;
 }
 
 #driver {
@@ -286,14 +297,12 @@ td {
   overflow: auto; /* Add scrollbars if the content exceeds the dialog size */
 }
 
-
 /* ===results table styles== */
 #driverResults table {
   border: 1px solid #ccc; /* Add a border around the table */
   border-collapse: collapse; /* Collapse borders for a cleaner look */
   width: 100%; /* Ensure the table takes full width */
   margin-top: 20px; /* Space above the table */
-  
 }
 
 #driverResults table th,
@@ -336,14 +345,16 @@ dialog table tbody {
   width: 100%;
 }
 
-dialog table thead, dialog table tbody tr {
+dialog table thead,
+dialog table tbody tr {
   display: table; /* Ensures rows align properly */
   width: 100%;
   table-layout: fixed; /* Consistent column width */
 }
 
 /* Optional: Padding and border styles for table cells */
-dialog table th, dialog table td {
+dialog table th,
+dialog table td {
   padding: 8px;
   text-align: left;
   border-bottom: 1px solid #ddd;

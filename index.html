@@ -1,273 +1,346 @@
 <!DOCTYPE html>
 <html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <script src="js/f1.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"> 
-    <link rel="stylesheet" href="style/styles.css">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap">
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap"
+    />
     <title>COMP 3512 Assignment 2</title>
-</head>
-<header>
+  </head>
+  <header>
     <!-- Nav bar -->
     <nav class="navbar navbar-light bg-light d-flex justify-content-between">
-        <a class="navbar-brand" href="index.html">
-            <img src="images/logo.jpg" alt="Logo" id="logo" width="100" height="80" class="d-inline-block align-top">
-
-        </a>
-        <div class="mx-auto text-center" style="flex-grow: 1;">
-            <span style="font-size: 1.5rem; font-weight: bold;">
-                F1 Dashboard Project
-            </span>
-        </div>
+      <a class="navbar-brand" href="index.html">
+        <img
+          src="images/logo.jpg"
+          alt="Logo"
+          id="logo"
+          width="100"
+          height="80"
+          class="d-inline-block align-top"
+        />
+      </a>
+      <div class="mx-auto text-center" style="flex-grow: 1">
+        <span style="font-size: 1.5rem; font-weight: bold">
+          F1 Dashboard Project
+        </span>
+      </div>
     </nav>
-</header>
+  </header>
 
-<body>
-
+  <body>
     <main>
-        <!-- Loading Spinner -->
-        <div class="spinner-border m-5" role="status" style="display: none;"></div>
+      <!-- Loading Spinner -->
+      <div class="spinner-border m-5" role="status" style="display: none"></div>
 
-        <!--Display home page. First thing when open the page  -->
-        <article id="home">
-            <div id="left-container">
-                <!-- Show a brief description about the project -->
-                <div id="descrition">
-                    <p>This project allows users to view Formula 1 race data for previous seasons,
-                        providing a look at race results, qualifying results, and race data. The user interface allows sorting of race data by
-                        various criteria such as position or constructor, and also features modal popups displaying additional details about drivers, 
-                        constructors, and circuits. We built this project using HTML, CSS, and JavaScript to create a responsive and functional front-end design.
-                        The app was a team effort by Duy Tran and Chase Knight, and you can find the code on GitHub.
-                        <a href="https://github.com/tduy755/COMP3512-Assign2.git" target="_blank">View the GitHub Repository</a></p>
-                </div>
-                <!-- Display all seasons include 2020 - 2023 -->
-                <div id="seasons">
-                    <label for="season-select" style="padding: 10px;"><strong>Season</strong></label>
-                    <select id="season-select">
-                        <option></option>
-                    </select>
-                </div>
+      <!--Display home page. First thing when open the page  -->
+      <article id="home">
+        <div id="left-container">
+          <!-- Show a brief description about the project -->
+          <div id="descrition">
+            <p>
+              This project allows users to view Formula 1 race data for previous
+              seasons, providing a look at race results, qualifying results, and
+              race data. The user interface allows sorting of race data by
+              various criteria such as position or constructor, and also
+              features modal popups displaying additional details about drivers,
+              constructors, and circuits. We built this project using HTML, CSS,
+              and JavaScript to create a responsive and functional front-end
+              design. The app was a team effort by Duy Tran and Chase Knight,
+              and you can find the code on GitHub.
+              <a
+                href="https://github.com/tduy755/COMP3512-Assign2.git"
+                target="_blank"
+                >View the GitHub Repository</a
+              >
+            </p>
+          </div>
+          <!-- Display all seasons include 2020 - 2023 -->
+          <div id="seasons">
+            <label for="season-select" style="padding: 10px"
+              ><strong>Season</strong></label
+            >
+            <select id="season-select">
+              <option></option>
+            </select>
+          </div>
+        </div>
+        <!-- Display some type of decoration image -->
+        <div id="image">
+          <img src="images/Charles_Leclerc_2022.jpg" />
+        </div>
+      </article>
+
+      <!--Display browse page when user select a season  -->
+      <article id="browse">
+        <!-- Display all races of the selected season sorted by rounds  -->
+        <section id="container">
+          <section id="races">
+            <h3 id="raceHeading"></h3>
+            <table>
+              <tr>
+                <th>Round</th>
+                <th>Circuit Name</th>
+              </tr>
+            </table>
+          </section>
+
+          <!-- Display race results when user clicks race result -->
+          <section id="raceResults">
+            <!-- Display race info  -->
+            <div id="raceInfo">
+              <h3 id="raceInfoHeading">Race Info</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Race Name</th>
+                    <th>Round</th>
+                    <th>Year</th>
+                    <th>Circuit Name</th>
+                    <th>Date</th>
+                    <th>URL</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Rows will be appended here -->
+                </tbody>
+              </table>
             </div>
-            <!-- Display some type of decoration image -->
-            <div id="image">
-                <img src="images/Charles_Leclerc_2022.jpg">
+
+            <!-- Display qualifying reults sort by position-->
+
+            <div id="qualifying">
+              <!-- Loading Spinner -->
+              <div
+                id="qualifyingSpinner"
+                class="spinner-border m-5"
+                role="status"
+                style="display: none"
+              ></div>
+              <h3 id="qualifyingHeading">Qualifying</h3>
+              <table>
+                <thead>
+                  <tr>
+                    <th data-column="position">
+                      Position <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="name">
+                      Name <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="constructor">
+                      Constructor
+                      <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="q1">
+                      Q1 <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="q2">
+                      Q2 <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="q3">
+                      Q3 <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Rows will be appended here -->
+                </tbody>
+              </table>
             </div>
-        </article>
+          </section>
 
-        <!--Display browse page when user select a season  -->
-        <article id="browse">
-            <!-- Display all races of the selected season sorted by rounds  -->
-            <section id="container">
-                <section id="races">
-                    <h3 id="raceHeading"></h3>
-                    <table>
-                        <tr>
-                            <th>Round</th>
-                            <th>Circuit Name</th>
-                        </tr>
-                    </table>
-                </section>
+          <section id="results">
+            <div
+              id="resultsSpinner"
+              class="spinner-border m-5"
+              role="status"
+              style="display: none"
+            ></div>
 
-                <!-- Display race results when user clicks race result -->
-                <section id="raceResults">
+            <!-- Display final result -->
+            <h3 id="finalResultHeading">Results</h3>
+            <!-- Display top 3 drivers -->
+            <div id="top3Result">
+              <div class="driver-box" id="driver1">
+                <h3></h3>
+                <p></p>
+              </div>
+              <div class="driver-box" id="driver2">
+                <h3></h3>
+                <p></p>
+              </div>
+              <div class="driver-box" id="driver3">
+                <h3></h3>
+                <p></p>
+              </div>
+            </div>
 
-                    <!-- Display race info  -->
-                    <div id="raceInfo">
-                        <h3 id="raceInfoHeading">Race Info</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Race Name</th>
-                                    <th>Round</th>
-                                    <th>Year</th>
-                                    <th>Circuit Name</th>
-                                    <th>Date</th>
-                                    <th>URL</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Rows will be appended here -->
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- Display qualifying reults sort by position-->
-
-                    <div id="qualifying">
-                        <!-- Loading Spinner -->
-                        <div id="qualifyingSpinner" class="spinner-border m-5" role="status" style="display: none;">
-                        </div>
-                        <h3 id="qualifyingHeading">Qualifying</h3>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th data-column="position">Position <span class="sort-icon" data-sort="asc">↑</span>
-                                    </th>
-                                    <th data-column="name">Name <span class="sort-icon" data-sort="asc">↑</span></th>
-                                    <th data-column="constructor">Constructor <span class="sort-icon"
-                                            data-sort="asc">↑</span></th>
-                                    <th data-column="q1">Q1 <span class="sort-icon" data-sort="asc">↑</span></th>
-                                    <th data-column="q2">Q2 <span class="sort-icon" data-sort="asc">↑</span></th>
-                                    <th data-column="q3">Q3 <span class="sort-icon" data-sort="asc">↑</span></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Rows will be appended here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-
-                <section id="results">
-                    <div id="resultsSpinner" class="spinner-border m-5" role="status" style="display: none;"></div>
-
-
-                    <!-- Display final result -->
-                    <h3 id="finalResultHeading">Results</h3>
-                    <!-- Display top 3 drivers -->
-                    <div id="top3Result">
-                        <div class="driver-box" id="driver1">
-                            <h3></h3>
-                            <p></p>
-                        </div>
-                        <div class="driver-box" id="driver2">
-                            <h3></h3>
-                            <p></p>
-                        </div>
-                        <div class="driver-box" id="driver3">
-                            <h3></h3>
-                            <p></p>
-                        </div>
-
-
-                    </div>
-
-
-                    <!-- Display all drivers result -->
-                    <div id="driverResults" >
-                        <!-- Cliking on the table labels will change the sort order
+            <!-- Display all drivers result -->
+            <div id="driverResults">
+              <!-- Cliking on the table labels will change the sort order
                  DONT REQUERY THE API, simply sort the data aray in memory -->
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th data-column="position">Position <span class="sort-icon" data-sort="asc">↑</span>
-                                    </th>
-                                    <th data-column="name">Name <span class="sort-icon" data-sort="asc">↑</span></th>
-                                    <th data-column="constructor">Constructor <span class="sort-icon"
-                                            data-sort="asc">↑</span></th>
-                                    <th data-column="laps">Laps <span class="sort-icon" data-sort="asc">↑</span></th>
-                                    <th data-column="pts">Points <span class="sort-icon" data-sort="asc">↑</span></th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Rows will be appended here -->
-                            </tbody>
-
-                        </table>
-                    </div>
-                </section>
-
-
-
-            </section>
-        </article>
+              <table>
+                <thead>
+                  <tr>
+                    <th data-column="position">
+                      Position <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="name">
+                      Name <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="constructor">
+                      Constructor
+                      <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="laps">
+                      Laps <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                    <th data-column="pts">
+                      Points <span class="sort-icon" data-sort="asc">↑</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Rows will be appended here -->
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </section>
+      </article>
     </main>
 
     <!-- display driver popup when user click on driver link -->
     <dialog id="driver">
-        <h3>Driver Information</h3>
-        <button class="close-top-right" id="closeDriverTopRight"><i class="fa fa-times"></i></button>
+      <h3>Driver Information</h3>
+      <button class="close-top-right" id="closeDriverTopRight">
+        <i class="fa fa-times"></i>
+      </button>
 
-        <div id="driverDetails">
-            <!-- Driver details will be populated here -->
-            <img src="images/Charles_Leclerc_2022.jpg" alt="Driver Image" class="driver-image">
-            <ul>
-                <li><strong>Name:</strong> <span id="driverName"></span></li>
-                <li><strong>Date of Birth:</strong> <span id="driverDOB"></span></li>
-                <li><strong>Age:</strong> <span id="driverAge"></span></li>
-                <li><strong>Nationality:</strong> <span id="driverNationality"></span></li>
-                <li><strong>More Info:</strong> <a href="#" id="driverURL" target="_blank">Click here</a></li>
-            </ul>
-        </div>
-    
-        <!-- Section for displaying race results in a table -->
-        <div id="driverResults">
-            <h4>Race Results:</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Round</th>
-                        <th>Race Name</th>
-                        <th>Position</th>
-                        <th>Points</th>
-                    </tr>
-                </thead>
-                <tbody id="driverResultsList"></tbody>
-            </table>
-        </div>
-        <button id="closeDriverDialog">Close</button>
+      <div id="driverDetails">
+        <!-- Driver details will be populated here -->
+        <img
+          src="https://placehold.co/300x200"
+          alt="Driver Image"
+          class="driver-image"
+        />
+        <ul>
+          <li><strong>Name:</strong> <span id="driverName"></span></li>
+          <li><strong>Date of Birth:</strong> <span id="driverDOB"></span></li>
+          <li><strong>Age:</strong> <span id="driverAge"></span></li>
+          <li>
+            <strong>Nationality:</strong> <span id="driverNationality"></span>
+          </li>
+          <li>
+            <strong>More Info:</strong>
+            <a href="#" id="driverURL" target="_blank">Click here</a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Section for displaying race results in a table -->
+      <div id="driverResults">
+        <h4>Race Results:</h4>
+        <table>
+          <thead>
+            <tr>
+              <th>Round</th>
+              <th>Race Name</th>
+              <th>Position</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody id="driverResultsList"></tbody>
+        </table>
+      </div>
+      <button id="closeDriverDialog">Close</button>
     </dialog>
     <!-- display circuit popup when user click on circuit link -->
     <dialog id="circuit">
-        <button class="close-top-right" id="closeCircuitTopRight"><i class="fa fa-times"></i></button>
+      <button class="close-top-right" id="closeCircuitTopRight">
+        <i class="fa fa-times"></i>
+      </button>
 
-        <h3>Circuit Information</h3>
-        <div id="circuitDetails">
-            <!-- Circuit details will be populated here -->
-            <img src="images/Charles_Leclerc_2022.jpg" alt="Circuit Image" class="circuit-image">
-            <ul>
-                <li><strong>Name:</strong> <span id="circuitName"></span></li>
-                <li><strong>Location:</strong> <span id="circuitLocation"></span></li>
-                <li><strong>Country:</strong> <span id="circuitCountry"></span></li>
-                <li><strong>More Info:</strong> <a href="#" id="circuitURL" target="_blank">Click here</a></li>
-            </ul>
-        </div>
-        <button id="closeCircuitDialog">Close</button>
+      <h3>Circuit Information</h3>
+      <div id="circuitDetails">
+        <!-- Circuit details will be populated here -->
+        <img
+          src="https://placehold.co/300x200"
+          alt="Circuit Image"
+          class="circuit-image"
+        />
+        <ul>
+          <li><strong>Name:</strong> <span id="circuitName"></span></li>
+          <li><strong>Location:</strong> <span id="circuitLocation"></span></li>
+          <li><strong>Country:</strong> <span id="circuitCountry"></span></li>
+          <li>
+            <strong>More Info:</strong>
+            <a href="#" id="circuitURL" target="_blank">Click here</a>
+          </li>
+        </ul>
+      </div>
+      <button id="closeCircuitDialog">Close</button>
     </dialog>
     <!-- display constructor popup when user click on constructor link -->
 
     <dialog id="constructor">
-        <button class="close-top-right" id="closeConstructorTopRight"><i class="fa fa-times"></i></button>
-        <h3>Constructor Information</h3>
-        <div id="constructorDetails">
-            <img src="images/Charles_Leclerc_2022.jpg" alt="Circuit Image" class="circuit-image">
-            <ul>
-                <li><strong>Name:</strong> <span id="constructorName"></span></li>
-                <li><strong>Location:</strong> <span id="constructorNationality"></span></li>
-                <li><strong>More Info:</strong> <a href="#" id="constructorURL" target="_blank">Click here</a></li>
-            </ul>
-            <!-- Section for displaying race results in a table -->
-  <div id="constructorResults">
-    <h4>Race Results:</h4>
-    <table id="raceResultsTable">
-      <thead>
-        <tr>
-          <th>Round</th>
-          <th>Race Name</th>
-          <th>Driver</th>
-          <th>Position</th>
-        </tr>
-      </thead>
-      <tbody id="raceResultsList"></tbody>
-    </table>
-  </div>
-
-            <!-- Constructor details will be populated here -->
+      <button class="close-top-right" id="closeConstructorTopRight">
+        <i class="fa fa-times"></i>
+      </button>
+      <h3>Constructor Information</h3>
+      <div id="constructorDetails">
+        <img
+          src="https://placehold.co/300x200"
+          alt="Circuit Image"
+          class="circuit-image"
+        />
+        <ul>
+          <li><strong>Name:</strong> <span id="constructorName"></span></li>
+          <li>
+            <strong>Location:</strong> <span id="constructorNationality"></span>
+          </li>
+          <li>
+            <strong>More Info:</strong>
+            <a href="#" id="constructorURL" target="_blank">Click here</a>
+          </li>
+        </ul>
+        <!-- Section for displaying race results in a table -->
+        <div id="constructorResults">
+          <h4>Race Results:</h4>
+          <table id="raceResultsTable">
+            <thead>
+              <tr>
+                <th>Round</th>
+                <th>Race Name</th>
+                <th>Driver</th>
+                <th>Position</th>
+              </tr>
+            </thead>
+            <tbody id="raceResultsList"></tbody>
+          </table>
         </div>
-        <button id="closeConstructorDialog">Close</button>
+
+        <!-- Constructor details will be populated here -->
+      </div>
+      <button id="closeConstructorDialog">Close</button>
     </dialog>
 
     <dialog id="raceResultDialog">
-        <p>Please select a race result.</p>
-        <button id="closeDialog">Close</button>
+      <p>Please select a race result.</p>
+      <button id="closeDialog">Close</button>
     </dialog>
-
-</body>
-<!-- test -->
-
+  </body>
+  <!-- test -->
 </html>

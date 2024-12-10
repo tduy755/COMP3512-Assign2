@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Function to display seasons and hide the browse section
   function displaySeasons() {
     // Hide the browse article initially
-    const browseArticle = document.getElementById("browse");
+    const browseArticle = document.querySelector("#browse");
     browseArticle.style.display = "none"; // Hide the browse section
 
     // Populate the seasons select element with years from 2020 to 2023
